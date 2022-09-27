@@ -88,6 +88,17 @@ public class JsonDocument {
         this.read(file);
     }
 
+
+    /**
+     * Create a new {@code Document} and take over all entries stored in a json {@link String}
+     *
+     * @param string The {@link String} from which all entries should be taken
+     */
+    public JsonDocument(@NonNull String string) {
+        this();
+        this.read(string);
+    }
+
     /**
      * Create a new, empty {@code Document}
      */
