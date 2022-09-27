@@ -8,6 +8,11 @@
     <artifactId>Java</artifactId>
     <packaging>pom</packaging>
     <version>0.0.0</version>
+    <modules>
+
+        <module>SharedAPI</module>
+        <module>SharedAPI</module>
+    </modules>
 
     <properties>
         <maven.compiler.source>18</maven.compiler.source>
@@ -21,6 +26,14 @@
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <version>1.18.24</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- Jetbrains Annotations -->
+        <dependency>
+            <groupId>org.jetbrains</groupId>
+            <artifactId>annotations</artifactId>
+            <version>23.0.0</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>
