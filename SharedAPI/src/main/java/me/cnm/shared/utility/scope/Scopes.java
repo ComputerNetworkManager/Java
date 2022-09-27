@@ -1,4 +1,4 @@
-package me.cnm.shared.util.scope;
+package me.cnm.shared.utility.scope;
 
 import lombok.experimental.UtilityClass;
 import org.jetbrains.annotations.Nullable;

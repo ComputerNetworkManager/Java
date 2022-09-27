@@ -1,6 +1,6 @@
-package me.cnm.impl.shared.util.mapping;
+package me.cnm.impl.shared.utility.mapping;
 
-import me.cnm.shared.util.mapping.ITypeMapper;
+import me.cnm.shared.utility.mapping.ITypeMapper;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;

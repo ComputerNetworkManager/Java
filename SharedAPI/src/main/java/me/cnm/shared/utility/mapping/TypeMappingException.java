@@ -1,4 +1,4 @@
-package me.cnm.shared.util.mapping;
+package me.cnm.shared.utility.mapping;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

@@ -1,9 +1,9 @@
-package me.cnm.impl.shared.util.mapping;
+package me.cnm.impl.shared.utility.mapping;
 
 import lombok.Data;
 import lombok.Getter;
-import me.cnm.shared.util.json.JsonDocument;
-import me.cnm.shared.util.mapping.TypeMappingException;
+import me.cnm.shared.utility.json.JsonDocument;
+import me.cnm.shared.utility.mapping.TypeMappingException;
 
 import java.util.Arrays;
 import java.util.List;

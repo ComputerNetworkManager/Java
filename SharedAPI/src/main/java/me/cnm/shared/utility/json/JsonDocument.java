@@ -1,9 +1,9 @@
-package me.cnm.shared.util.json;
+package me.cnm.shared.utility.json;
 
 import com.google.gson.*;
 import lombok.Cleanup;
 import lombok.NonNull;
-import me.cnm.shared.util.scope.Scopes;
+import me.cnm.shared.utility.scope.Scopes;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

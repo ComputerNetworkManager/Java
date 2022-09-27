@@ -1,8 +1,8 @@
-package me.cnm.impl.shared.util.mapping;
+package me.cnm.impl.shared.utility.mapping;
 
 import lombok.NonNull;
-import me.cnm.shared.util.mapping.ITypeMapper;
-import me.cnm.shared.util.mapping.TypeMappingException;
+import me.cnm.shared.utility.mapping.ITypeMapper;
+import me.cnm.shared.utility.mapping.TypeMappingException;
 import org.apache.commons.lang3.ClassUtils;
 import org.jetbrains.annotations.NotNull;
 

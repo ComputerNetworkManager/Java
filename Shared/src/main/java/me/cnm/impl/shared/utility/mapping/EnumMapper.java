@@ -1,6 +1,6 @@
-package me.cnm.impl.shared.util.mapping;
+package me.cnm.impl.shared.utility.mapping;
 
-import me.cnm.shared.util.mapping.TypeMappingException;
+import me.cnm.shared.utility.mapping.TypeMappingException;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;

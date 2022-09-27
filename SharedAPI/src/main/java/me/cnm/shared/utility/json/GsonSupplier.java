@@ -1,4 +1,4 @@
-package me.cnm.shared.util.json;
+package me.cnm.shared.utility.json;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
