@@ -1,3 +1,8 @@
 /.idea/
 
+/Shared/target/
+/SharedAPI/target/
+
 /Java.iml
+/Shared.iml
+/SharedAPI.iml
