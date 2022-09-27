@@ -23,7 +23,7 @@ A clear and concise description of what you expected to happen.
 **Screenshots**
 If applicable, add screenshots to help explain your problem.
 
-**Dums (please complete the following information):**
+**Dumps (please complete the following information):**
  - Client:
  - Server:
  - Web-Server:
