@@ -93,8 +93,6 @@ public class FormatHandler implements IFormatHandler {
         for (int i = 0; i < MULTIPLIERS.length; i++) {
             long multiplier = MULTIPLIERS[i];
 
-            System.out.println(SHORT_NAME[i] + " " + rest + " " + multiplier + " ");
-
             long restUnit = rest / multiplier;
             formated = formated.replace("%" + SHORT_NAME[i], Long.toString(restUnit));
 
