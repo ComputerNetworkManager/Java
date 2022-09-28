@@ -798,8 +798,12 @@ public class JsonDocument {
      */
     @Contract("_ -> this")
     public JsonDocument write(@NonNull OutputStream outputStream) {
-        @Cleanup OutputStreamWriter outputStreamWriter = new OutputStreamWriter(outputStream, StandardCharsets.UTF_8);
-        return this.write(outputStreamWriter);
+        OutputStreamWriter outputStreamWriter = new OutputStreamWriter(outputStream, StandardCharsets.UTF_8);
+        try {
+            return this.write(outputStreamWriter);
+        } finally {
+            Scopes.throwRuntime(outputStreamWriter::close);
+        }
     }
 
     /**
@@ -838,8 +842,12 @@ public class JsonDocument {
      */
     @Contract("_ -> this")
     public JsonDocument read(@NonNull InputStream inputStream) {
-        @Cleanup InputStreamReader inputStreamReader = new InputStreamReader(inputStream, StandardCharsets.UTF_8);
-        return this.read(inputStreamReader);
+        InputStreamReader inputStreamReader = new InputStreamReader(inputStream, StandardCharsets.UTF_8);
+        try {
+            return this.read(inputStreamReader);
+        } finally {
+            Scopes.throwRuntime(inputStreamReader::close);
+        }
     }
 
     /**
@@ -851,10 +859,14 @@ public class JsonDocument {
      */
     @Contract("_ -> this")
     public JsonDocument read(@NonNull Reader reader) {
-        @Cleanup BufferedReader bufferedReader = new BufferedReader(reader);
-        this.append(JsonParser.parseReader(bufferedReader).getAsJsonObject());
+        BufferedReader bufferedReader = new BufferedReader(reader);
+        try {
+            this.append(JsonParser.parseReader(bufferedReader).getAsJsonObject());
 
-        return this;
+            return this;
+        } finally {
+            Scopes.throwRuntime(bufferedReader::close);
+        }
     }
 
     @Contract("_ -> this")
@@ -875,8 +887,12 @@ public class JsonDocument {
     public JsonDocument read(File file) throws FileNotFoundException {
         if (!Files.exists(file.toPath())) return this;
 
-        @Cleanup FileInputStream fileInputStream = new FileInputStream(file);
-        return this.read(fileInputStream);
+        FileInputStream fileInputStream = new FileInputStream(file);
+        try {
+            return this.read(fileInputStream);
+        } finally {
+            Scopes.throwRuntime(fileInputStream::close);
+        }
     }
 
     /**

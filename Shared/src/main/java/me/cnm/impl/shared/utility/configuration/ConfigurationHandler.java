@@ -21,6 +21,7 @@ public class ConfigurationHandler implements IConfigurationHandler {
         if (!file.exists()) {
             if (!file.getParentFile().exists()) file.getParentFile().mkdirs();
             Scopes.throwRuntime(file::createNewFile);
+            Scopes.throwRuntime(() -> new JsonDocument().write(file));
         }
 
         this.configuration = Scopes.throwRuntime(() -> new JsonDocument(this.file));

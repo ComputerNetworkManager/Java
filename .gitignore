@@ -3,6 +3,8 @@
 /Shared/target/
 /SharedAPI/target/
 
+/target/
+
 /Java.iml
 /Shared.iml
 /SharedAPI.iml
