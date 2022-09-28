@@ -6,15 +6,13 @@ import org.jetbrains.annotations.NotNull;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
-import java.util.GregorianCalendar;
 
 public class FormatHandler implements IFormatHandler {
 
     // Date and Time
     private static final String[] SHORT_NAME = new String[]{"y", "mo", "d", "h", "m", "s"};
-    private static final int[] TYPES = new int[]{Calendar.YEAR, Calendar.MONTH, Calendar.DAY_OF_MONTH, Calendar.HOUR_OF_DAY, Calendar.MINUTE, Calendar.SECOND};
+    private static final long[] MULTIPLIERS = new long[]{31536000000L, 2628000000L, 86400000, 3600000, 60000, 1000};
 
 
     // Binary prefixes for IEC
@@ -71,10 +69,10 @@ public class FormatHandler implements IFormatHandler {
     public String formatValue(long value, @NotNull String unit) {
         if (value < KILO) return String.format("%d %s", value, unit).trim();
         else if (value < MEGA) return this.formatUnits(value, KILO, String.format("K%s", unit));
-        else if (value < GIGA) return this.formatUnits(value, MEBI,  String.format("M%s", unit));
-        else if (value < TERA) return this.formatUnits(value, GIGA,  String.format("G%s", unit));
-        else if (value < PETA) return this.formatUnits(value, TERA,  String.format("T%s", unit));
-        else if (value < EXA) return this.formatUnits(value, PETA,  String.format("P%s", unit));
+        else if (value < GIGA) return this.formatUnits(value, MEBI, String.format("M%s", unit));
+        else if (value < TERA) return this.formatUnits(value, GIGA, String.format("G%s", unit));
+        else if (value < PETA) return this.formatUnits(value, TERA, String.format("T%s", unit));
+        else if (value < EXA) return this.formatUnits(value, PETA, String.format("P%s", unit));
         else return this.formatUnits(value, EXA, String.format("E%s", unit));
     }
 
@@ -89,17 +87,21 @@ public class FormatHandler implements IFormatHandler {
     @NotNull
     public String formatTimeDiff(long startTime, long endTime, @NotNull String format) {
         String formated = format;
+        long fullTime = endTime - startTime;
+        long rest = fullTime;
 
-        long[] differences = this.getDateDiff(startTime, endTime, true);
-        for (int i = 0; i < TYPES.length; i++) {
-            formated = formated.replace("%" + SHORT_NAME[i],
-                    differences.length >= i ? String.valueOf(differences[i]) : "0");
-        }
+        for (int i = 0; i < MULTIPLIERS.length; i++) {
+            long multiplier = MULTIPLIERS[i];
 
-        long[] fullDifferences = this.getDateDiff(startTime, endTime, false);
-        for (int i = 0; i < TYPES.length; i++) {
-            formated = formated.replace("%f" + SHORT_NAME[i],
-                    differences.length >= i ? String.valueOf(fullDifferences[i]) : "0");
+            System.out.println(SHORT_NAME[i] + " " + rest + " " + multiplier + " ");
+
+            long restUnit = rest / multiplier;
+            formated = formated.replace("%" + SHORT_NAME[i], Long.toString(restUnit));
+
+            rest -= multiplier * restUnit;
+
+            long fullUnit = fullTime / multiplier;
+            formated = formated.replace("%f" + SHORT_NAME[i], Long.toString(fullUnit));
         }
 
         return formated;
@@ -108,54 +110,12 @@ public class FormatHandler implements IFormatHandler {
     @Override
     @NotNull
     public String formatElapsedSecs(long secs) {
-        return this.formatTimeDiff(0, secs, "%fh, %h:%m:%s");
+        return this.formatTimeDiff(0, secs * 1000, "%fh, %h:%m:%s");
     }
 
     private String formatUnits(long value, long prefix, String unit) {
         if (value % prefix == 0) return String.format("%d %s", value / prefix, unit);
         return String.format("%.2f %s", (double) value / prefix, unit);
-    }
-
-    private long[] getDateDiff(long startTime, long endTime, boolean modify) {
-        Calendar startTimeCalender = this.getCalenderWithMillis(startTime);
-        Calendar endTimeCalender = this.getCalenderWithMillis(endTime);
-
-        boolean future = false;
-        if (endTimeCalender.equals(startTimeCalender)) return new long[0];
-
-        if (endTimeCalender.after(startTimeCalender)) future = true;
-
-        // Temporary 50ms time buffer added to avoid display truncation due to code execution delays
-        endTimeCalender.add(Calendar.MILLISECOND, future ? 50 : -50);
-
-        long[] differences = new long[TYPES.length];
-        for (int i = 0; i < TYPES.length; i++) {
-            int diff = dateDiff(TYPES[i], startTimeCalender, endTimeCalender, future, modify);
-            differences[i] = diff;
-        }
-
-        // Preserve correctness in the original date object by removing the extra buffer time
-        endTimeCalender.add(Calendar.MILLISECOND, future ? -50 : 50);
-        return differences;
-    }
-
-    private int dateDiff(int type, Calendar fromDate, Calendar toDate, boolean future, boolean modifyCalender) {
-        int diff = 0;
-        long savedDate = fromDate.getTimeInMillis();
-        while ((future && !fromDate.after(toDate)) || (!future && !fromDate.before(toDate))) {
-            if (modifyCalender) savedDate = fromDate.getTimeInMillis();
-            fromDate.add(type, future ? 1 : -1);
-            diff++;
-        }
-        diff--;
-        fromDate.setTimeInMillis(savedDate);
-        return diff;
-    }
-
-    private Calendar getCalenderWithMillis(long millis) {
-        Calendar calendar = new GregorianCalendar();
-        calendar.setTimeInMillis(millis);
-        return calendar;
     }
 
 }
