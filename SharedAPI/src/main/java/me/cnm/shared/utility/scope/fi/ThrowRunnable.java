@@ -1,4 +1,4 @@
-package me.cnm.shared.utility.scope;
+package me.cnm.shared.utility.scope.fi;
 
 /**
  * A {@link Runnable} that can throw any exception

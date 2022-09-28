@@ -14,7 +14,7 @@ import java.util.Objects;
 public class ConfigurationHandler implements IConfigurationHandler {
 
     private final File file;
-    private final JsonDocument configuration;
+    public final JsonDocument configuration;
 
     public ConfigurationHandler() {
         this.file = new File(".", "config.json");
@@ -30,6 +30,11 @@ public class ConfigurationHandler implements IConfigurationHandler {
     @Override
     @Nullable
     public <T> T getEntry(@NonNull String key, @NonNull Class<T> clazz) {
+        if (clazz == JsonDocument.class) {
+            //noinspection unchecked
+            return (T) this.configuration.getDocument(key);
+        }
+
         return this.configuration.get(key, clazz);
     }
 
@@ -46,7 +51,8 @@ public class ConfigurationHandler implements IConfigurationHandler {
 
     @Override
     public void saveEntry(@NonNull String key, @NonNull Object value) {
-        this.configuration.append(key, value);
+        if (value instanceof JsonDocument jsonDocument) this.configuration.append(key, jsonDocument);
+        else this.configuration.append(key, value);
         Scopes.throwRuntime(() -> this.configuration.write(this.file));
     }
 

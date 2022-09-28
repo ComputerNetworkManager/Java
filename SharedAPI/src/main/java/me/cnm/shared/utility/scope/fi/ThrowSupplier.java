@@ -1,4 +1,4 @@
-package me.cnm.shared.utility.scope;
+package me.cnm.shared.utility.scope.fi;
 
 import java.util.function.Supplier;
 

@@ -577,7 +577,7 @@ public class JsonDocument {
     @Contract(pure = true)
     public String getString(@NonNull String key) {
         return Scopes.ifNotNull(this.getPrimitive(key), primitive ->
-                primitive.isNumber() ? primitive.getAsString() : null);
+                primitive.isString() ? primitive.getAsString() : null);
     }
 
     /**
