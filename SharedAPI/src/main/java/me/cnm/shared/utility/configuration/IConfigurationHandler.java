@@ -1,5 +1,6 @@
 package me.cnm.shared.utility.configuration;
 
+import com.google.gson.JsonSyntaxException;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -16,7 +17,7 @@ public interface IConfigurationHandler {
      * @param clazz The class of the type to witch it should be mapped
      * @param <T>   The type to witch the value should be mapped
      * @return The mapped value or null
-     * @throws ClassCastException If the value is from another type
+     * @throws JsonSyntaxException If the value is from another type
      */
     @Nullable <T> T getEntry(@NotNull String key, @NotNull Class<T> clazz);
 
