@@ -2,6 +2,8 @@ package me.cnm.shared.utility.scope;
 
 import lombok.NonNull;
 import lombok.experimental.UtilityClass;
+import me.cnm.shared.utility.scope.fi.ThrowRunnable;
+import me.cnm.shared.utility.scope.fi.ThrowSupplier;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Function;
