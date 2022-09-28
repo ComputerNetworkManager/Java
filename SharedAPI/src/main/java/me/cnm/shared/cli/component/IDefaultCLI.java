@@ -4,7 +4,6 @@ import me.cnm.shared.cli.log.LogLevel;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.io.PrintStream;
 import java.util.List;
 
 /**
@@ -13,12 +12,11 @@ import java.util.List;
 public interface IDefaultCLI {
 
     /**
-     * Get the {@link PrintStream} witch prints to the console
+     * Prints a message only to the console
      *
-     * @return The console print stream
+     * @param object The Object to be printed to the console
      */
-    @NotNull
-    PrintStream getConsoleStream();
+    void printToConsole(String object);
 
     /**
      * Print a message to the console and the log file

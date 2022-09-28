@@ -1,6 +1,8 @@
 package me.cnm.impl.shared.cli;
 
 import lombok.NonNull;
+import me.cnm.impl.shared.cli.command.CommandHandler;
+import me.cnm.impl.shared.cli.command.ConsoleHandler;
 import me.cnm.impl.shared.cli.component.DefaultCLI;
 import me.cnm.impl.shared.cli.component.DefaultCLIComponent;
 import me.cnm.impl.shared.cli.log.LogHandler;
@@ -12,7 +14,6 @@ import me.cnm.shared.cli.component.AbstractCLIComponent;
 import me.cnm.shared.cli.component.ICLIComponent;
 import me.cnm.shared.cli.component.IDefaultCLI;
 import me.cnm.shared.cli.log.ILogHandler;
-import org.apache.commons.lang3.NotImplementedException;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.PrintStream;
@@ -20,6 +21,8 @@ import java.io.PrintStream;
 public class CLIHandler implements ICLIHandler {
 
     // Command
+    private final ICommandHandler commandHandler;
+    private final ConsoleHandler consoleHandler;
 
     // Component
     private final ICLIComponent defaultCLIComponent;
@@ -34,6 +37,8 @@ public class CLIHandler implements ICLIHandler {
         PrintStream consoleStream = System.out;
 
         // Command
+        this.commandHandler = new CommandHandler();
+        this.consoleHandler = new ConsoleHandler(() -> currentComponent);
 
         // Log
         SystemLogger systemLogger = new SystemLogger(handlerLibrary);
@@ -41,13 +46,17 @@ public class CLIHandler implements ICLIHandler {
 
         // Component
         this.defaultCLIComponent = new DefaultCLIComponent();
-        this.defaultCLI = new DefaultCLI(consoleStream, systemLogger);
+        this.defaultCLI = new DefaultCLI(this.commandHandler, this.consoleHandler, consoleStream, systemLogger);
+    }
+
+    public void startCLI() {
+        this.consoleHandler.startListen();
     }
 
     @Override
     @NotNull
     public ICommandHandler getCommandHandler() {
-        throw new NotImplementedException();
+        return this.commandHandler;
     }
 
     @Override
