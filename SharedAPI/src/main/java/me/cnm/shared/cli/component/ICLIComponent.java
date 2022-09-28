@@ -1,7 +1,9 @@
 package me.cnm.shared.cli.component;
 
+import me.cnm.shared.cli.log.LogLevel;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -14,10 +16,12 @@ public interface ICLIComponent {
     /**
      * Method called when a message should be printed to the log
      *
-     * @param message The message wich should be printed
+     * @param logLevel  The log level of the message
+     * @param message   The message wich should be printed
+     * @param throwable A throwable, that should be logged with it
      */
     @ApiStatus.OverrideOnly
-    void print(@NotNull String message);
+    void print(@NotNull LogLevel logLevel, @NotNull String message, @Nullable Throwable throwable);
 
     /**
      * Method called when the {@code tab} key is pressed

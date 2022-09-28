@@ -1,6 +1,8 @@
 package me.cnm.shared.cli.component;
 
+import me.cnm.shared.cli.log.LogLevel;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.PrintStream;
 import java.util.List;
@@ -21,9 +23,11 @@ public interface IDefaultCLI {
     /**
      * Print a message to the console and the log file
      *
-     * @param message The message to be printed
+     * @param logLevel  The log level of the message
+     * @param message   The message wich should be printed
+     * @param throwable A throwable, that should be logged with it
      */
-    void print(@NotNull String message);
+    void print(@NotNull LogLevel logLevel, @NotNull String message, @Nullable Throwable throwable);
 
     /**
      * Get the default autocomplete option<br>

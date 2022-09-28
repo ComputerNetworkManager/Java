@@ -1,5 +1,7 @@
 package me.cnm.shared.cli.log;
 
+import org.jetbrains.annotations.NotNull;
+
 /**
  * The log handler is used to log messages to the config and a file
  */
@@ -12,7 +14,7 @@ public interface ILogHandler {
      * @see #log(LogLevel, String)
      * @see LogLevel#DEBUG
      */
-    void debug(String message);
+    void debug(@NotNull String message);
 
     /**
      * Send a debug-message with a throwable
@@ -22,7 +24,7 @@ public interface ILogHandler {
      * @see #log(LogLevel, String, Throwable)
      * @see LogLevel#DEBUG
      */
-    void debug(String message, Throwable throwable);
+    void debug(@NotNull String message, @NotNull Throwable throwable);
 
     /**
      * Send an info-message
@@ -31,7 +33,7 @@ public interface ILogHandler {
      * @see #log(LogLevel, String)
      * @see LogLevel#INFO
      */
-    void info(String message);
+    void info(@NotNull String message);
 
     /**
      * Send an info-message with a throwable
@@ -41,7 +43,7 @@ public interface ILogHandler {
      * @see #log(LogLevel, String, Throwable)
      * @see LogLevel#INFO
      */
-    void info(String message, Throwable throwable);
+    void info(@NotNull String message, @NotNull Throwable throwable);
 
     /**
      * Send a warn-message
@@ -50,7 +52,7 @@ public interface ILogHandler {
      * @see #log(LogLevel, String)
      * @see LogLevel#WARN
      */
-    void warn(String message);
+    void warn(@NotNull String message);
 
     /**
      * Send a warn-message with a throwable
@@ -60,7 +62,7 @@ public interface ILogHandler {
      * @see #log(LogLevel, String, Throwable)
      * @see LogLevel#WARN
      */
-    void warn(String message, Throwable throwable);
+    void warn(@NotNull String message, @NotNull Throwable throwable);
 
     /**
      * Send an error-message
@@ -69,7 +71,7 @@ public interface ILogHandler {
      * @see #log(LogLevel, String)
      * @see LogLevel#ERROR
      */
-    void error(String message);
+    void error(@NotNull String message);
 
     /**
      * Send an error-message with a throwable
@@ -79,7 +81,7 @@ public interface ILogHandler {
      * @see #log(LogLevel, String, Throwable)
      * @see LogLevel#ERROR
      */
-    void error(String message, Throwable throwable);
+    void error(@NotNull String message, @NotNull Throwable throwable);
 
     /**
      * Log a message to the console and the log file
@@ -88,7 +90,7 @@ public interface ILogHandler {
      * @param message  The message to be logged
      * @see LogLevel
      */
-    void log(LogLevel logLevel, String message);
+    void log(LogLevel logLevel, @NotNull String message);
 
 
     /**
@@ -100,6 +102,6 @@ public interface ILogHandler {
      * @param throwable The throwable to be logged
      * @see LogLevel
      */
-    void log(LogLevel logLevel, String message, Throwable throwable);
+    void log(LogLevel logLevel, @NotNull String message, @NotNull Throwable throwable);
 
 }
