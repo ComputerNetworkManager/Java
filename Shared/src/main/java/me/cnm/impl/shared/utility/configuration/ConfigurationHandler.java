@@ -41,12 +41,8 @@ public class ConfigurationHandler implements IConfigurationHandler {
     @Override
     @NotNull
     public <T> T getEntry(@NonNull String key, @NonNull T def, @NonNull Class<T> clazz) {
-        if (!this.configuration.contains(key)) {
-            this.configuration.append(key, def);
-            Scopes.throwRuntime(() -> this.configuration.write(this.file));
-        }
-
-        return Objects.requireNonNull(this.configuration.get(key, clazz));
+        if (!this.configuration.contains(key)) this.saveEntry(key, def);
+        return Objects.requireNonNull(this.getEntry(key, clazz));
     }
 
     @Override

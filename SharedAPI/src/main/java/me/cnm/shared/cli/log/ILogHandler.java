@@ -1,6 +1,7 @@
 package me.cnm.shared.cli.log;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * The log handler is used to log messages to the config and a file
@@ -102,6 +103,6 @@ public interface ILogHandler {
      * @param throwable The throwable to be logged
      * @see LogLevel
      */
-    void log(LogLevel logLevel, @NotNull String message, @NotNull Throwable throwable);
+    void log(LogLevel logLevel, @NotNull String message, @Nullable Throwable throwable);
 
 }
