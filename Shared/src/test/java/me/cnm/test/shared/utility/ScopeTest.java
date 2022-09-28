@@ -28,6 +28,7 @@ public class ScopeTest {
         }));
     }
 
+    @SuppressWarnings("EmptyMethod")
     private void emptyRunnable() {
 
     }
