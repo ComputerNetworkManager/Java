@@ -22,16 +22,21 @@ public class DefaultCLI implements IDefaultCLI {
 
     private final ICommandHandler commandHandler;
     private final ILogHandler logHandler;
-    private final ConsoleHandler consoleHandler;
+    public final ConsoleHandler consoleHandler;
 
     private final PrintStream consoleStream;
     private final SystemLogger systemLogger;
 
     @Override
-    public void printToConsole(String object) {
+    public void printToConsole(Object object) {
         this.consoleStream.print(Ansi.ansi().eraseLine());
         this.consoleStream.print(object);
         this.consoleHandler.redrawLine();
+    }
+
+    @Override
+    public void printlnToConsole(Object object) {
+        this.printToConsole(object + "\n");
     }
 
     @Override

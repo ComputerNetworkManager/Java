@@ -3,6 +3,7 @@ package me.cnm.shared.cli;
 import me.cnm.shared.cli.command.ICommandHandler;
 import me.cnm.shared.cli.component.AbstractCLIComponent;
 import me.cnm.shared.cli.component.ICLIComponent;
+import me.cnm.shared.cli.component.system.ILoadingBar;
 import me.cnm.shared.cli.log.ILogHandler;
 import org.jetbrains.annotations.NotNull;
 
@@ -36,6 +37,15 @@ public interface ICLIHandler {
      * Remove the current component from handling and set the system to handle everything
      */
     void resetComponent();
+
+    /**
+     * Create a {@code LoadingBar} component
+     *
+     * @param name The name of the loading bar
+     * @return The loading bar
+     */
+    @NotNull
+    ILoadingBar createLoadingBar(@NotNull String name);
 
     /**
      * Get the current instance of hte {@code LogHandler}
