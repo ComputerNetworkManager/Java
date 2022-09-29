@@ -67,7 +67,7 @@ public class DefaultCLI implements IDefaultCLI {
     @Override
     public void handleInput(@NotNull String[] args) {
         if (args.length == 0) return;
-        this.logHandler.debug("> " + String.join(" ", args));
+        this.logHandler.debug(">" + String.join(" ", args));
 
         Command command = this.commandHandler.get(args[0]);
         String[] commandArgs = Arrays.copyOfRange(args, 1, args.length);

@@ -24,7 +24,8 @@ public interface ICLIComponent {
     void print(@NotNull LogLevel logLevel, @NotNull String message, @Nullable Throwable throwable);
 
     /**
-     * Method called when the {@code tab} key is pressed
+     * Method called when the {@code tab} key is pressed<br>
+     * On each candidate it is automatically check, if the current input starts with the argument
      *
      * @param args The current input, split by " "
      * @return All possible autocompletion

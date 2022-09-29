@@ -7,6 +7,7 @@ import org.jline.reader.Completer;
 import org.jline.reader.LineReader;
 import org.jline.reader.ParsedLine;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.function.Supplier;
 
@@ -17,7 +18,15 @@ public class SystemCompleter implements Completer {
 
     @Override
     public void complete(LineReader lineReader, ParsedLine parsedLine, List<Candidate> list) {
-        String[] args = parsedLine.line().split(" ");
+        String line = parsedLine.line();
+        String[] args = line.split(" ");
+
+        if (line.endsWith(" ")) {
+            String[] newArgs = Arrays.copyOf(args, args.length + 1);
+            newArgs[args.length] = "";
+            args = newArgs;
+        }
+
         List<String> candidates = componentSupplier.get().getAutoComplete(args);
 
         for (String candidate : candidates) list.add(new Candidate(candidate));

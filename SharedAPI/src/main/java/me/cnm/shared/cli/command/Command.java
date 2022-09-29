@@ -56,7 +56,8 @@ public abstract class Command {
     public abstract void execute(@NotNull String[] args);
 
     /**
-     * Autocomplete this command
+     * Autocomplete this command<br>
+     * On each candidate it is automatically check, if the current input starts with the argument
      *
      * @param args        Arguments used to invoke the autocomplete
      * @param suggestions List to add the suggestions
