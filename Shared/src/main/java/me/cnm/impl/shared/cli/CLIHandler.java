@@ -37,7 +37,7 @@ public class CLIHandler implements ICLIHandler {
         PrintStream consoleStream = System.out;
 
         // Command
-        this.commandHandler = new CommandHandler();
+        this.commandHandler = new CommandHandler(handlerLibrary);
         this.consoleHandler = new ConsoleHandler(() -> currentComponent);
 
         // Log

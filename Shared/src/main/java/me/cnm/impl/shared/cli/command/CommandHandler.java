@@ -1,6 +1,8 @@
 package me.cnm.impl.shared.cli.command;
 
 import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
+import me.cnm.shared.IHandlerLibrary;
 import me.cnm.shared.cli.command.Command;
 import me.cnm.shared.cli.command.CommandRegistrationException;
 import me.cnm.shared.cli.command.ICommandHandler;
@@ -12,7 +14,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+@RequiredArgsConstructor
 public class CommandHandler implements ICommandHandler {
+
+    private final IHandlerLibrary handlerLibrary;
 
     private final List<Command> commands = new ArrayList<>();
 
@@ -26,6 +31,7 @@ public class CommandHandler implements ICommandHandler {
                 throw new CommandRegistrationException("A command with the same name or alias is already registered");
         }
 
+        command.setHandlerLibrary(this.handlerLibrary);
         this.commands.add(command);
     }
 

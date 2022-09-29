@@ -1,9 +1,12 @@
 package me.cnm.shared.cli.command;
 
 import lombok.NonNull;
+import me.cnm.shared.IHandlerLibrary;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  * A command that can be executed via the CLI input
@@ -19,6 +22,11 @@ public abstract class Command {
      * Aliases of the command
      */
     private final String[] aliases;
+
+    /**
+     * The handler library to be used by the command
+     */
+    private IHandlerLibrary handlerLibrary;
 
     /**
      * Create a command
@@ -78,4 +86,21 @@ public abstract class Command {
         return aliases;
     }
 
+    /**
+     * Get the handler library
+     * @return The handler library
+     */
+    @NotNull
+    protected final IHandlerLibrary getHandlerLibrary() {
+        return Objects.requireNonNull(handlerLibrary);
+    }
+
+    /**
+     * Set the handler library, automatically done when registering
+     * @param handlerLibrary The handler library
+     */
+    @ApiStatus.Internal
+    public void setHandlerLibrary(@NonNull IHandlerLibrary handlerLibrary) {
+        this.handlerLibrary = handlerLibrary;
+    }
 }
