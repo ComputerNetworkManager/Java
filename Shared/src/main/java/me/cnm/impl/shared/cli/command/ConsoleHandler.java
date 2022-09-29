@@ -37,7 +37,7 @@ public class ConsoleHandler {
                     componentSupplier.get().handleInput(readLine.split(" "));
                 }
             } catch (UserInterruptException e) {
-                // TODO: Think of exit strategie
+                System.exit(0);
             }
         });
     }

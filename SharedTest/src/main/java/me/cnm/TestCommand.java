@@ -1,8 +1,7 @@
 package me.cnm;
 
-import lombok.NonNull;
+import me.cnm.shared.cli.ICLIHandler;
 import me.cnm.shared.cli.command.Command;
-import me.cnm.shared.cli.log.ILogHandler;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -15,8 +14,8 @@ public class TestCommand extends Command {
 
     @Override
     public void execute(@NotNull String[] args) {
-        this.getHandlerLibrary().getHandler(ILogHandler.class).info("Test command");
-        this.getHandlerLibrary().getHandler(ILogHandler.class).warn("BBC");
+        this.getHandlerLibrary().getHandler(ICLIHandler.class).getLogHandler().info("Test command");
+        this.getHandlerLibrary().getHandler(ICLIHandler.class).getLogHandler().warn("BBC");
     }
 
     @Override

@@ -67,7 +67,7 @@ public class DefaultCLI implements IDefaultCLI {
     @Override
     public void handleInput(@NotNull String[] args) {
         if (args.length == 0) return;
-        this.logHandler.debug(String.join(" ", args));
+        this.logHandler.debug("> " + String.join(" ", args));
 
         Command command = this.commandHandler.get(args[0]);
         String[] commandArgs = Arrays.copyOfRange(args, 1, args.length);
@@ -77,6 +77,12 @@ public class DefaultCLI implements IDefaultCLI {
             return;
         }
 
-        command.execute(commandArgs);
+        try {
+            command.execute(commandArgs);
+        } catch (Exception e) {
+            this.print(LogLevel.ERROR, "An error occurred while execute command " + command.getName(), null);
+        }
+
+        this.consoleHandler.redrawLine();
     }
 }
