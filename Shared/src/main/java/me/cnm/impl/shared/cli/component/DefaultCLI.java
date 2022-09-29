@@ -7,6 +7,7 @@ import me.cnm.impl.shared.cli.log.SystemLogger;
 import me.cnm.shared.cli.command.Command;
 import me.cnm.shared.cli.command.ICommandHandler;
 import me.cnm.shared.cli.component.IDefaultCLI;
+import me.cnm.shared.cli.log.ILogHandler;
 import me.cnm.shared.cli.log.LogLevel;
 import org.fusesource.jansi.Ansi;
 import org.jetbrains.annotations.NotNull;
@@ -20,6 +21,7 @@ import java.util.List;
 public class DefaultCLI implements IDefaultCLI {
 
     private final ICommandHandler commandHandler;
+    private final ILogHandler logHandler;
     private final ConsoleHandler consoleHandler;
 
     private final PrintStream consoleStream;
@@ -65,11 +67,15 @@ public class DefaultCLI implements IDefaultCLI {
     @Override
     public void handleInput(@NotNull String[] args) {
         if (args.length == 0) return;
+        this.logHandler.debug(String.join(" ", args));
 
         Command command = this.commandHandler.get(args[0]);
         String[] commandArgs = Arrays.copyOfRange(args, 1, args.length);
 
-        if (command == null) return;
+        if (command == null) {
+            this.logHandler.warn("This command doesn't exist. Use help to get a list of all commands.");
+            return;
+        }
 
         command.execute(commandArgs);
     }
