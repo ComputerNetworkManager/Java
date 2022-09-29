@@ -88,7 +88,31 @@ public abstract class Command {
     }
 
     /**
+     * Get the description of the command<br>
+     * Displayed in the "help" command
+     *
+     * @return description of the command
+     */
+    @ApiStatus.OverrideOnly
+    public String getDescription() {
+        return null;
+    }
+
+    /**
+     * Get the syntax of the command<br>
+     * Displayed in the "help command"<br>
+     * Should not contain the leading command, for example for the command "command <arg>" this should return "<arg>"
+     *
+     * @return syntax of the command
+     */
+    @ApiStatus.OverrideOnly
+    public String getSyntax() {
+        return null;
+    }
+
+    /**
      * Get the handler library
+     *
      * @return The handler library
      */
     @NotNull
@@ -98,6 +122,7 @@ public abstract class Command {
 
     /**
      * Set the handler library, automatically done when registering
+     *
      * @param handlerLibrary The handler library
      */
     @ApiStatus.Internal

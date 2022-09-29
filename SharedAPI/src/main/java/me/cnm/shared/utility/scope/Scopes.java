@@ -61,4 +61,16 @@ public class Scopes {
         }
     }
 
+    /**
+     * Check if {@code value} is null, if it is return {@code or}, else return value
+     *
+     * @param value The value to be checked
+     * @param or    The value to be returned if {@code value} is null
+     * @param <T>   The type of the values
+     * @return {@code value} or {@code or}
+     */
+    public <T> T or(@Nullable T value, @NonNull T or) {
+        return (value == null ? or : value);
+    }
+
 }

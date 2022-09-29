@@ -47,6 +47,10 @@ public class CLIHandler implements ICLIHandler {
         // Component
         this.defaultCLIComponent = new DefaultCLIComponent();
         this.defaultCLI = new DefaultCLI(this.commandHandler, this.logHandler, this.consoleHandler, consoleStream, systemLogger);
+
+        // Register handler
+        handlerLibrary.registerHandler(ICommandHandler.class, this.commandHandler);
+        handlerLibrary.registerHandler(ILogHandler.class, this.logHandler);
     }
 
     public void startCLI() {
