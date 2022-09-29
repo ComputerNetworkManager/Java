@@ -1,10 +1,17 @@
 /.idea/
 
+/out/
+
 /Shared/target/
 /SharedAPI/target/
+/SharedTest/target
 
 /target/
 
 /Java.iml
 /Shared.iml
 /SharedAPI.iml
+/SharedTest.iml
+
+/config.json
+/log/

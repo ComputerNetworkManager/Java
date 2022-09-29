@@ -8,6 +8,7 @@ import java.math.RoundingMode;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+@SuppressWarnings("SpellCheckingInspection")
 public class FormatHandler implements IFormatHandler {
 
     // Date and Time
@@ -86,7 +87,7 @@ public class FormatHandler implements IFormatHandler {
     @Override
     @NotNull
     public String formatTimeDiff(long startTime, long endTime, @NotNull String format) {
-        String formated = format;
+        String formatted = format;
         long fullTime = endTime - startTime;
         long rest = fullTime;
 
@@ -94,15 +95,15 @@ public class FormatHandler implements IFormatHandler {
             long multiplier = MULTIPLIERS[i];
 
             long restUnit = rest / multiplier;
-            formated = formated.replace("%" + SHORT_NAME[i], Long.toString(restUnit));
+            formatted = formatted.replace("%" + SHORT_NAME[i], Long.toString(restUnit));
 
             rest -= multiplier * restUnit;
 
             long fullUnit = fullTime / multiplier;
-            formated = formated.replace("%f" + SHORT_NAME[i], Long.toString(fullUnit));
+            formatted = formatted.replace("%f" + SHORT_NAME[i], Long.toString(fullUnit));
         }
 
-        return formated;
+        return formatted;
     }
 
     @Override

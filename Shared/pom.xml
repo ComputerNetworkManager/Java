@@ -25,6 +25,36 @@
             <version>0.0.0</version>
             <scope>compile</scope>
         </dependency>
+
+        <!-- Log4j -->
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-api</artifactId>
+            <version>2.19.0</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-core</artifactId>
+            <version>2.19.0</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <!-- JLine -->
+        <dependency>
+            <groupId>org.jline</groupId>
+            <artifactId>jline</artifactId>
+            <version>3.21.0</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <!-- JAnsi -->
+        <dependency>
+            <groupId>org.fusesource.jansi</groupId>
+            <artifactId>jansi</artifactId>
+            <version>2.4.0</version>
+            <scope>compile</scope>
+        </dependency>
     </dependencies>
 
 </project>
