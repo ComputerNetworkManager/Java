@@ -40,6 +40,7 @@ public class LoadingBarComponent extends AbstractCLIComponent implements ILoadin
 
     @Override
     public void handleInput(@NotNull String[] args) {
+        this.getDefaultCLI().printToConsole(Ansi.ansi().cursorUpLine().eraseLine());
         this.getDefaultCLI().handleInput(args);
     }
 

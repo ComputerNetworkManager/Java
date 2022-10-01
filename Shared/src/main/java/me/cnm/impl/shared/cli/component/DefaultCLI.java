@@ -29,7 +29,7 @@ public class DefaultCLI implements IDefaultCLI {
 
     @Override
     public void printToConsole(Object object) {
-        this.consoleStream.print(Ansi.ansi().eraseLine());
+        this.consoleStream.print(Ansi.ansi().eraseLine(Ansi.Erase.ALL) + "\r");
         this.consoleStream.print(object);
         this.consoleHandler.redrawLine();
     }
@@ -41,7 +41,7 @@ public class DefaultCLI implements IDefaultCLI {
 
     @Override
     public void print(@NonNull LogLevel logLevel, @NonNull String message, Throwable throwable) {
-        this.consoleStream.print(Ansi.ansi().eraseLine());
+        this.consoleStream.print(Ansi.ansi().eraseLine(Ansi.Erase.ALL) + "\r");
         this.systemLogger.log(logLevel, message, throwable);
         this.consoleHandler.redrawLine();
     }
