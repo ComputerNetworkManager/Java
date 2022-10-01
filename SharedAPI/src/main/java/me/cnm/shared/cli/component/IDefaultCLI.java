@@ -16,7 +16,14 @@ public interface IDefaultCLI {
      *
      * @param object The Object to be printed to the console
      */
-    void printToConsole(String object);
+    void printToConsole(Object object);
+
+    /**
+     * Prints a message only to the console, and add a new line
+     *
+     * @param object The Object to be printed to the console
+     */
+    void printlnToConsole(Object object);
 
     /**
      * Print a message to the console and the log file

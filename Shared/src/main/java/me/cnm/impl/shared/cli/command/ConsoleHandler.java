@@ -44,6 +44,7 @@ public class ConsoleHandler {
 
     public void redrawLine() {
         ((LineReaderImpl) this.lineReader).redrawLine();
+        ((LineReaderImpl) this.lineReader).redisplay();
     }
 
 }

@@ -1,7 +1,8 @@
 package me.cnm.impl.shared.cli.command;
 
 import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
+import me.cnm.impl.shared.cli.command.system.HelpCommand;
+import me.cnm.impl.shared.cli.command.system.ShutdownCommand;
 import me.cnm.shared.IHandlerLibrary;
 import me.cnm.shared.cli.command.Command;
 import me.cnm.shared.cli.command.CommandRegistrationException;
@@ -14,12 +15,19 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-@RequiredArgsConstructor
 public class CommandHandler implements ICommandHandler {
 
     private final IHandlerLibrary handlerLibrary;
 
     private final List<Command> commands = new ArrayList<>();
+
+    public CommandHandler(IHandlerLibrary handlerLibrary) {
+        this.handlerLibrary = handlerLibrary;
+
+        // Register default commands
+        this.register(new HelpCommand());
+        this.register(new ShutdownCommand());
+    }
 
     @Override
     public void register(@NonNull Command command) {
