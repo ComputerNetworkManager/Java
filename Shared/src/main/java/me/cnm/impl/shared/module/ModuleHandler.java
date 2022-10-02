@@ -1,6 +1,7 @@
 package me.cnm.impl.shared.module;
 
 import lombok.NonNull;
+import me.cnm.impl.shared.module.java.JavaInterpreter;
 import me.cnm.impl.shared.module.loading.Module;
 import me.cnm.impl.shared.module.loading.ModuleInterpreterHolder;
 import me.cnm.impl.shared.module.loading.ModuleLoader;
@@ -28,6 +29,8 @@ public class ModuleHandler implements IModuleHandler {
     public ModuleHandler(IHandlerLibrary handlerLibrary) {
         this.handlerLibrary = handlerLibrary;
 
+        this.registerInterpreter("java", new JavaInterpreter(this.handlerLibrary));
+
         ModuleLoader moduleLoader = new ModuleLoader(this.handlerLibrary.getHandler(ILogHandler.class), this);
         moduleLoader.load();
         Runtime.getRuntime().addShutdownHook(new Thread(moduleLoader::stop));
@@ -35,7 +38,7 @@ public class ModuleHandler implements IModuleHandler {
 
     @Override
     @NotNull
-    public IModule loadModule(@NonNull File file) {
+    public IModule loadModule(@NonNull File file) throws Exception {
         IModule module = this.createModule(file);
         this.loadWithInterpreter(module);
         return module;
@@ -51,7 +54,7 @@ public class ModuleHandler implements IModuleHandler {
         return new Module(moduleDescription, file);
     }
 
-    public void loadWithInterpreter(IModule module) {
+    public void loadWithInterpreter(IModule module) throws Exception {
         IModuleDescription description = module.getModuleDescription();
 
         for (String dependency : description.getDependencies()) {
@@ -74,7 +77,7 @@ public class ModuleHandler implements IModuleHandler {
     }
 
     @Override
-    public void startModule(@NonNull IModule module) {
+    public void startModule(@NonNull IModule module) throws Exception {
         for (String dependency : module.getModuleDescription().getDependencies()) {
             if (Objects.requireNonNull(this.get(dependency)).isRunning())
                 throw new IllegalStateException("The dependency " + dependency + " (used by " +
@@ -92,7 +95,7 @@ public class ModuleHandler implements IModuleHandler {
     }
 
     @Override
-    public void stopModule(@NonNull IModule module) {
+    public void stopModule(@NonNull IModule module) throws Exception {
         String name = module.getModuleDescription().getName();
 
         for (IModule targetModule : this.getAll()) {
@@ -112,7 +115,7 @@ public class ModuleHandler implements IModuleHandler {
     }
 
     @Override
-    public void unloadModule(@NonNull IModule module) {
+    public void unloadModule(@NonNull IModule module) throws Exception {
         String name = module.getModuleDescription().getName();
 
         for (IModule targetModule : this.getAll()) {

@@ -28,10 +28,11 @@ public interface IModuleHandler {
      * @throws IllegalArgumentException If the file is not a directory
      * @throws IllegalStateException    If the module.json isn't correct or not all modules specified as
      *                                  dependencies are loaded
+     * @throws Exception                If the load fails
      * @see IModule
      */
     @NotNull
-    IModule loadModule(@NotNull File file);
+    IModule loadModule(@NotNull File file) throws Exception;
 
     /**
      * Start a module previously loaded by {@link #loadModule(File)}
@@ -39,8 +40,9 @@ public interface IModuleHandler {
      * @param module The module to start
      * @throws IllegalStateException If the module is running or not all modules specified as
      *                               dependencies are started
+     * @throws Exception             If the start fails
      */
-    void startModule(@NotNull IModule module);
+    void startModule(@NotNull IModule module) throws Exception;
 
     /**
      * Stop a module, witch means ensure, that all used resources are freed, e.g. command are unregistered etc.
@@ -48,8 +50,9 @@ public interface IModuleHandler {
      * @param module The module to stop
      * @throws IllegalStateException If the module is not running or some modules witch specified
      *                               this module as dependency are running
+     * @throws Exception             If the stop fails
      */
-    void stopModule(@NotNull IModule module);
+    void stopModule(@NotNull IModule module) throws Exception;
 
     /**
      * Unload a module, witch mens free it from being used by the process and be allowed to delete, override, etc. module files
@@ -57,8 +60,9 @@ public interface IModuleHandler {
      * @param module The module to unload
      * @throws IllegalStateException If the module is running or some modules witch specified
      *                               this module as dependency are loaded
+     * @throws Exception             If the unload fails
      */
-    void unloadModule(@NotNull IModule module);
+    void unloadModule(@NotNull IModule module) throws Exception;
 
     /**
      * Get a module by its name<br>
