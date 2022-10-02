@@ -45,7 +45,7 @@ public interface IModuleHandler {
     /**
      * Stop a module, witch means ensure, that all used resources are freed, e.g. command are unregistered etc.
      *
-     * @param module The module to start
+     * @param module The module to stop
      * @throws IllegalStateException If the module is not running or some modules witch specified
      *                               this module as dependency are running
      */
@@ -54,11 +54,11 @@ public interface IModuleHandler {
     /**
      * Unload a module, witch mens free it from being used by the process and be allowed to delete, override, etc. module files
      *
-     * @param file The directory of the module
+     * @param module The module to unload
      * @throws IllegalStateException If the module is running or some modules witch specified
      *                               this module as dependency are loaded
      */
-    void unloadModule(@NotNull File file);
+    void unloadModule(@NotNull IModule module);
 
     /**
      * Get a module by its name<br>

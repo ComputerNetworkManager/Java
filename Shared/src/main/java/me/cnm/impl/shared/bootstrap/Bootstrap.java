@@ -2,11 +2,13 @@ package me.cnm.impl.shared.bootstrap;
 
 import me.cnm.impl.shared.HandlerLibrary;
 import me.cnm.impl.shared.cli.CLIHandler;
+import me.cnm.impl.shared.module.ModuleHandler;
 import me.cnm.impl.shared.utility.UtilityHandler;
 import me.cnm.shared.IHandlerLibrary;
 import me.cnm.shared.cli.ICLIHandler;
 import me.cnm.shared.cli.command.ICommandHandler;
 import me.cnm.shared.cli.log.ILogHandler;
+import me.cnm.shared.module.IModuleHandler;
 import me.cnm.shared.utility.IUtilityHandler;
 import me.cnm.shared.utility.configuration.IConfigurationHandler;
 import me.cnm.shared.utility.format.IFormatHandler;
@@ -19,6 +21,7 @@ public class Bootstrap {
         // Register general handlers
         handlerLibrary.registerHandler(IUtilityHandler.class, new UtilityHandler());
         handlerLibrary.registerHandler(ICLIHandler.class, new CLIHandler(handlerLibrary));
+        handlerLibrary.registerHandler(IModuleHandler.class, new ModuleHandler(handlerLibrary));
 
         // Register utility handlers
         IUtilityHandler utilityHandler = handlerLibrary.getHandler(IUtilityHandler.class);
