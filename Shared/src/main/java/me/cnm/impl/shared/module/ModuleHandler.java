@@ -79,13 +79,13 @@ public class ModuleHandler implements IModuleHandler {
     @Override
     public void startModule(@NonNull IModule module) throws Exception {
         for (String dependency : module.getModuleDescription().getDependencies()) {
-            if (Objects.requireNonNull(this.get(dependency)).isRunning())
+            if (!Objects.requireNonNull(this.get(dependency)).isRunning())
                 throw new IllegalStateException("The dependency " + dependency + " (used by " +
                         module.getModuleDescription().getName() + ") wasn't started.");
         }
 
         for (String dependency : module.getModuleDescription().getSoftDependencies()) {
-            if (Objects.requireNonNull(this.get(dependency)).isRunning())
+            if (!Objects.requireNonNull(this.get(dependency)).isRunning())
                 this.handlerLibrary.getHandler(ILogHandler.class).warn("The soft dependency " + dependency +
                         " (used by " + module.getModuleDescription().getName() + ") wasn't started.");
         }

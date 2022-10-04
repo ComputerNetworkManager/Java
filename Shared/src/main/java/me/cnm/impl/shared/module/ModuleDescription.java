@@ -57,13 +57,13 @@ public class ModuleDescription implements IModuleDescription {
                     "required attribute " + name);
 
         JsonElement jsonElement = this.jsonDocument.get(name);
-        if (!Boolean.TRUE.equals(Scopes.ifNotNull(jsonElement, JsonElement::isJsonPrimitive)))
-            throw new IllegalStateException("The type of the attribute " + name + "of the module.json of " +
+        if (!Boolean.TRUE.equals(Scopes.ifNotNull(jsonElement, JsonElement::isJsonPrimitive)) && required)
+            throw new IllegalStateException("The type of the attribute " + name + " of the module.json of " +
                     moduleName + " must be a string");
 
         JsonPrimitive jsonPrimitive = Scopes.ifNotNull(jsonElement, JsonElement::getAsJsonPrimitive);
-        if (!Boolean.TRUE.equals(Scopes.ifNotNull(jsonPrimitive, JsonPrimitive::isString)))
-            throw new IllegalStateException("The type of the attribute " + name + "of the module.json of " +
+        if (!Boolean.TRUE.equals(Scopes.ifNotNull(jsonPrimitive, JsonPrimitive::isString)) && required)
+            throw new IllegalStateException("The type of the attribute " + name + " of the module.json of " +
                     moduleName + " must be a string");
 
         return Scopes.ifNotNull(jsonPrimitive, JsonPrimitive::getAsString);
@@ -73,7 +73,7 @@ public class ModuleDescription implements IModuleDescription {
         JsonElement jsonElement = this.jsonDocument.get(name);
         if (jsonElement == null) return new ArrayList<>();
 
-        if (jsonElement.isJsonArray())
+        if (!jsonElement.isJsonArray())
             throw new IllegalStateException("The type of the attribute " + name + "of the module.json of " +
                     moduleName + " must be an array");
 

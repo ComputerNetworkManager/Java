@@ -42,7 +42,7 @@ public class ModuleLoader {
                 .collect(Collectors.toCollection(ArrayList::new));
 
         int counter = 0;
-        while (counter++ < 3 && toLoadModules.size() > 0) {
+        while (++counter < 3 && toLoadModules.size() > 0) {
             List<IModule> loaded = new ArrayList<>();
 
             for (IModule toLoadModule : toLoadModules) {
@@ -72,7 +72,7 @@ public class ModuleLoader {
 
         List<IModule> toStartModules = new ArrayList<>(List.copyOf(this.moduleHandler.getAll()));
         counter = 0;
-        while (counter++ < 3 && toStartModules.size() > 0) {
+        while (++counter < 3 && toStartModules.size() > 0) {
             List<IModule> started = new ArrayList<>();
 
             for (IModule toStartModule : toStartModules) {
