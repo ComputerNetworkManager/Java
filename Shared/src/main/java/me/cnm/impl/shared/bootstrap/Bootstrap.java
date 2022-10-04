@@ -18,20 +18,20 @@ public class Bootstrap {
     public IHandlerLibrary createHandlerLibrary() {
         IHandlerLibrary handlerLibrary = new HandlerLibrary();
 
-        // Register general handlers
-        handlerLibrary.registerHandler(IUtilityHandler.class, new UtilityHandler());
-        handlerLibrary.registerHandler(ICLIHandler.class, new CLIHandler(handlerLibrary));
-        handlerLibrary.registerHandler(IModuleHandler.class, new ModuleHandler(handlerLibrary));
-
         // Register utility handlers
+        handlerLibrary.registerHandler(IUtilityHandler.class, new UtilityHandler());
         IUtilityHandler utilityHandler = handlerLibrary.getHandler(IUtilityHandler.class);
         handlerLibrary.registerHandler(IConfigurationHandler.class, utilityHandler.getConfigurationHandler());
         handlerLibrary.registerHandler(IFormatHandler.class, utilityHandler.getFormatHandler());
 
         // Register CLI handlers
-        ICLIHandler cliHandler = handlerLibrary.getHandler(ICLIHandler.class);
+        ICLIHandler cliHandler = new CLIHandler(handlerLibrary);
+        handlerLibrary.registerHandler(ICLIHandler.class, cliHandler);
         handlerLibrary.registerHandler(ICommandHandler.class, cliHandler.getCommandHandler());
         handlerLibrary.registerHandler(ILogHandler.class, cliHandler.getLogHandler());
+
+        // Register module handler
+        handlerLibrary.registerHandler(IModuleHandler.class, new ModuleHandler(handlerLibrary));
 
         return handlerLibrary;
     }
