@@ -1,6 +1,7 @@
 package me.cnm.impl.shared.module.java;
 
 import me.cnm.shared.IHandlerLibrary;
+import me.cnm.shared.module.exception.ModuleInterpreterException;
 import me.cnm.shared.module.java.JavaModule;
 import me.cnm.shared.module.loading.IModule;
 import me.cnm.shared.module.loading.IModuleInterpreter;
@@ -26,7 +27,7 @@ public class JavaInterpreter implements IModuleInterpreter {
     }
 
     @Override
-    public void loadModule(IModule module) throws MalformedURLException, ClassNotFoundException {
+    public void loadModule(IModule module) throws ModuleInterpreterException {
         JsonDocument additional = module.getModuleDescription().getAdditional();
         if (!additional.contains("main"))
             throw new IllegalStateException("The module.json of " + module.getModuleDescription().getName() + " doesn't" +
@@ -41,7 +42,13 @@ public class JavaInterpreter implements IModuleInterpreter {
                     "exist.");
         }
 
-        ModuleClassLoader classLoader = new ModuleClassLoader(this, jarFile, this.getClass().getClassLoader());
+        ModuleClassLoader classLoader;
+        try {
+            classLoader = new ModuleClassLoader(this, jarFile, this.getClass().getClassLoader());
+        } catch (MalformedURLException e) {
+            throw new ModuleInterpreterException(e);
+        }
+
         Class<?> mainClass = classLoader.findClass(main, false);
 
         if (!JavaModule.class.isAssignableFrom(mainClass)) {
@@ -53,27 +60,31 @@ public class JavaInterpreter implements IModuleInterpreter {
     }
 
     @Override
-    public void startModule(IModule module) throws NoSuchMethodException, InvocationTargetException,
-            InstantiationException, IllegalAccessException, NoSuchFieldException {
-        ModuleInformation moduleInformation = Objects.requireNonNull(this.modules.get(module));
+    public void startModule(IModule module) throws ModuleInterpreterException {
+        try {
+            ModuleInformation moduleInformation = Objects.requireNonNull(this.modules.get(module));
 
-        JavaModule javaModule = moduleInformation.getMainClass().getDeclaredConstructor().newInstance();
+            JavaModule javaModule = moduleInformation.getMainClass().getDeclaredConstructor().newInstance();
 
-        Field handlerLibrary = JavaModule.class.getDeclaredField("handlerLibrary");
-        Field moduleDescription = JavaModule.class.getDeclaredField("moduleDescription");
-        Field dataFolder = JavaModule.class.getDeclaredField("dataFolder");
+            Field handlerLibraryField = JavaModule.class.getDeclaredField("handlerLibrary");
+            Field moduleDescriptionField = JavaModule.class.getDeclaredField("moduleDescription");
+            Field dataFolderField = JavaModule.class.getDeclaredField("dataFolder");
 
-        handlerLibrary.setAccessible(true);
-        moduleDescription.setAccessible(true);
-        dataFolder.setAccessible(true);
+            handlerLibraryField.setAccessible(true);
+            moduleDescriptionField.setAccessible(true);
+            dataFolderField.setAccessible(true);
 
-        handlerLibrary.set(javaModule, this.handlerLibrary);
-        moduleDescription.set(javaModule, module.getModuleDescription());
-        dataFolder.set(javaModule, module.getDataFolder());
+            handlerLibraryField.set(javaModule, this.handlerLibrary);
+            moduleDescriptionField.set(javaModule, module.getModuleDescription());
+            dataFolderField.set(javaModule, module.getDataFolder());
 
-        moduleInformation.setMainInstance(javaModule);
-        module.setRunning(true);
-        javaModule.start();
+            moduleInformation.setMainInstance(javaModule);
+            module.setRunning(true);
+            javaModule.start();
+        } catch (NoSuchMethodException | InvocationTargetException |
+                InstantiationException | IllegalAccessException | NoSuchFieldException e) {
+            throw new ModuleInterpreterException(e);
+        }
     }
 
     @Override
@@ -88,37 +99,37 @@ public class JavaInterpreter implements IModuleInterpreter {
     }
 
     @Override
-    public void unloadModule(IModule module) throws IOException {
+    public void unloadModule(IModule module) throws ModuleInterpreterException {
         ModuleInformation moduleInformation = Objects.requireNonNull(this.modules.get(module));
 
         ModuleClassLoader classLoader = moduleInformation.getClassLoader();
         for (String name : classLoader.getLoadedClasses().keySet()) this.classes.remove(name);
 
-        classLoader.close();
+        try {
+            classLoader.close();
+        } catch (IOException e) {
+            throw new ModuleInterpreterException(e);
+        }
 
         this.modules.remove(module);
-
-        System.gc();
     }
 
-    public Class<?> getClassByName(String name) throws ClassNotFoundException {
+    public Class<?> getClassByName(String name) {
         Class<?> target = this.classes.get(name);
 
         if (target != null) return target;
 
         for (ModuleInformation value : this.modules.values()) {
-            try {
-                target = value.getClassLoader().findClass(name, false);
-            } catch (ClassNotFoundException ignored) {}
+            target = value.getClassLoader().findClass(name, false);
 
             if (target != null) return target;
         }
 
-        throw new ClassNotFoundException(name);
+        return null;
     }
 
     public void setClass(String name, Class<?> clazz) {
-        if (!this.classes.containsKey(name)) this.classes.put(name, clazz);
+        this.classes.computeIfAbsent(name, key -> clazz);
     }
 
 }

@@ -9,6 +9,9 @@ import me.cnm.shared.IHandlerLibrary;
 import me.cnm.shared.cli.log.ILogHandler;
 import me.cnm.shared.module.IModuleDescription;
 import me.cnm.shared.module.IModuleHandler;
+import me.cnm.shared.module.exception.ModuleDependencyException;
+import me.cnm.shared.module.exception.ModuleDescriptionNotFoundException;
+import me.cnm.shared.module.exception.ModuleInterpreterException;
 import me.cnm.shared.module.loading.IModule;
 import me.cnm.shared.module.loading.IModuleInterpreter;
 import me.cnm.shared.utility.helper.ArrayHelper;
@@ -46,7 +49,7 @@ public class ModuleHandler implements IModuleHandler {
 
     @Override
     @NotNull
-    public IModule loadModule(@NonNull File file) throws Exception {
+    public IModule loadModule(@NonNull File file) throws ModuleInterpreterException {
         IModule module = this.createModule(file);
         this.loadWithInterpreter(module);
         return module;
@@ -56,46 +59,56 @@ public class ModuleHandler implements IModuleHandler {
         if (!file.isDirectory()) throw new IllegalArgumentException(file.getAbsolutePath() + " is not a directory.");
 
         File moduleJson = new File(file, "module.json");
-        if (!moduleJson.exists()) throw new IllegalStateException(file.getName() + " doesn't has a module.json");
+        if (!moduleJson.exists()) throw new ModuleDescriptionNotFoundException(moduleJson.getAbsolutePath());
 
         IModuleDescription moduleDescription = new ModuleDescription(moduleJson);
         return new Module(moduleDescription, file);
     }
 
-    public void loadWithInterpreter(IModule module) throws Exception {
+    public void loadWithInterpreter(IModule module) throws ModuleInterpreterException {
         IModuleDescription description = module.getModuleDescription();
+        String name = description.getName();
 
         for (String dependency : description.getDependencies()) {
-            if (this.get(dependency) == null) throw new IllegalStateException("The dependency " + dependency +
-                    " (used by " + description.getName() + ") wasn't loaded.");
+            if (this.get(dependency) == null) throw new ModuleDependencyException(name, dependency, false, "loaded");
         }
 
         for (String dependency : description.getSoftDependencies()) {
-            this.handlerLibrary.getHandler(ILogHandler.class).warn("The soft dependency " + dependency +
-                    " (used by " + description.getName() + ") wasn't loaded.");
+            if (this.get(dependency) == null) {
+                try {
+                    throw new ModuleDependencyException(name, dependency, true, "loaded");
+                } catch (ModuleDependencyException e) {
+                    this.handlerLibrary.getHandler(ILogHandler.class).warn(e.getMessage());
+                }
+            }
         }
 
         IModuleInterpreter interpreter = this.getInterpreter(description.getLanguage());
         if (interpreter == null)
-            throw new IllegalStateException("No interpreter for " + description.getLanguage() +
-                    " (used by " + description.getName() + ") was registered.");
+            throw new ModuleDependencyException(name, description + " (interpreter)", true, "loaded");
 
         this.modules.put(description.getName(), module);
         interpreter.loadModule(module);
     }
 
     @Override
-    public void startModule(@NonNull IModule module) throws Exception {
+    public void startModule(@NonNull IModule module) throws ModuleInterpreterException {
+        String name = module.getModuleDescription().getName();
+
         for (String dependency : module.getModuleDescription().getDependencies()) {
             if (!Objects.requireNonNull(this.get(dependency)).isRunning())
-                throw new IllegalStateException("The dependency " + dependency + " (used by " +
-                        module.getModuleDescription().getName() + ") wasn't started.");
+                throw new ModuleDependencyException(name, dependency, false, "stared");
+
         }
 
         for (String dependency : module.getModuleDescription().getSoftDependencies()) {
-            if (!Objects.requireNonNull(this.get(dependency)).isRunning())
-                this.handlerLibrary.getHandler(ILogHandler.class).warn("The soft dependency " + dependency +
-                        " (used by " + module.getModuleDescription().getName() + ") wasn't started.");
+            if (!Objects.requireNonNull(this.get(dependency)).isRunning()) {
+                try {
+                    throw new ModuleDependencyException(name, dependency, true, "stared");
+                } catch (ModuleDependencyException e) {
+                    this.handlerLibrary.getHandler(ILogHandler.class).warn(e.getMessage());
+                }
+            }
         }
 
         IModuleInterpreter interpreter = this.getInterpreter(module.getModuleDescription().getLanguage());
@@ -103,19 +116,22 @@ public class ModuleHandler implements IModuleHandler {
     }
 
     @Override
-    public void stopModule(@NonNull IModule module) throws Exception {
+    public void stopModule(@NonNull IModule module) throws ModuleInterpreterException {
         String name = module.getModuleDescription().getName();
 
         for (IModule targetModule : this.getAll()) {
             String dependency = targetModule.getModuleDescription().getName();
 
             if (targetModule.getModuleDescription().getDependencies().contains(name) && targetModule.isRunning())
-                throw new IllegalStateException("The dependency " + dependency + " (used by " +
-                        name + ") wasn't stopped.");
+                throw new ModuleDependencyException(name, dependency, false, "stopped");
 
-            if (targetModule.getModuleDescription().getSoftDependencies().contains(name) && targetModule.isRunning())
-                this.handlerLibrary.getHandler(ILogHandler.class).warn("The soft dependency " + dependency +
-                        " (used by " + name + ") wasn't stopped.");
+            if (targetModule.getModuleDescription().getSoftDependencies().contains(name) && targetModule.isRunning()) {
+                try {
+                    throw new ModuleDependencyException(name, dependency, true, "stopped");
+                } catch (ModuleDependencyException e) {
+                    this.handlerLibrary.getHandler(ILogHandler.class).warn(e.getMessage());
+                }
+            }
         }
 
         IModuleInterpreter interpreter = this.getInterpreter(module.getModuleDescription().getLanguage());
@@ -123,19 +139,22 @@ public class ModuleHandler implements IModuleHandler {
     }
 
     @Override
-    public void unloadModule(@NonNull IModule module) throws Exception {
+    public void unloadModule(@NonNull IModule module) throws ModuleInterpreterException {
         String name = module.getModuleDescription().getName();
 
         for (IModule targetModule : this.getAll()) {
             String dependency = targetModule.getModuleDescription().getName();
 
             if (targetModule.getModuleDescription().getDependencies().contains(name))
-                throw new IllegalStateException("The dependency " + dependency + " (used by " +
-                        name + ") wasn't unloaded.");
+                throw new ModuleDependencyException(name, dependency, false, "unloaded");
 
-            if (targetModule.getModuleDescription().getSoftDependencies().contains(name))
-                this.handlerLibrary.getHandler(ILogHandler.class).warn("The soft dependency " + dependency +
-                        " (used by " + name + ") wasn't unloaded.");
+            if (targetModule.getModuleDescription().getSoftDependencies().contains(name)) {
+                try {
+                    throw new ModuleDependencyException(name, dependency, true, "unloaded");
+                } catch (ModuleDependencyException e) {
+                    this.handlerLibrary.getHandler(ILogHandler.class).warn(e.getMessage());
+                }
+            }
         }
 
         IModuleInterpreter interpreter = this.getInterpreter(module.getModuleDescription().getLanguage());

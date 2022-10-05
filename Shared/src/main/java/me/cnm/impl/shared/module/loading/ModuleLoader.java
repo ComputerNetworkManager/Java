@@ -42,7 +42,7 @@ public class ModuleLoader {
                 .collect(Collectors.toCollection(ArrayList::new));
 
         int counter = 0;
-        while (++counter < 3 && toLoadModules.size() > 0) {
+        while (++counter < 3 && !toLoadModules.isEmpty()) {
             List<IModule> loaded = new ArrayList<>();
 
             for (IModule toLoadModule : toLoadModules) {
@@ -62,7 +62,7 @@ public class ModuleLoader {
             loaded.clear();
         }
 
-        if (toLoadModules.size() > 0) {
+        if (!toLoadModules.isEmpty()) {
             this.logHandler.error("Not all modules could be loaded.");
             this.logHandler.error("Maybe there dependencies are not installed?");
             this.logHandler.error("The following modules are affected:");
@@ -72,7 +72,7 @@ public class ModuleLoader {
 
         List<IModule> toStartModules = new ArrayList<>(List.copyOf(this.moduleHandler.getAll()));
         counter = 0;
-        while (++counter < 3 && toStartModules.size() > 0) {
+        while (++counter < 3 && !toStartModules.isEmpty()) {
             List<IModule> started = new ArrayList<>();
 
             for (IModule toStartModule : toStartModules) {
@@ -125,7 +125,7 @@ public class ModuleLoader {
     public void stop() {
         List<IModule> actionModules = new ArrayList<>(List.copyOf(this.moduleHandler.getAll()));
         int counter = 0;
-        while (counter++ < 3 && actionModules.size() > 0) {
+        while (counter++ < 3 && !actionModules.isEmpty()) {
             List<IModule> stopped = new ArrayList<>();
 
             for (IModule actionModule : actionModules) {
@@ -148,7 +148,7 @@ public class ModuleLoader {
 
         actionModules = new ArrayList<>(List.copyOf(this.moduleHandler.getAll()));
         counter = 0;
-        while (counter++ < 3 && actionModules.size() > 0) {
+        while (counter++ < 3 && !actionModules.isEmpty()) {
             List<IModule> unloaded = new ArrayList<>();
 
             for (IModule actionModule : actionModules) {

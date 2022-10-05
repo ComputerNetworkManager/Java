@@ -798,11 +798,10 @@ public class JsonDocument {
      */
     @Contract("_ -> this")
     public JsonDocument write(@NonNull OutputStream outputStream) {
-        OutputStreamWriter outputStreamWriter = new OutputStreamWriter(outputStream, StandardCharsets.UTF_8);
-        try {
+        try (OutputStreamWriter outputStreamWriter = new OutputStreamWriter(outputStream, StandardCharsets.UTF_8)) {
             return this.write(outputStreamWriter);
-        } finally {
-            Scopes.throwRuntime(outputStreamWriter::close);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -842,11 +841,10 @@ public class JsonDocument {
      */
     @Contract("_ -> this")
     public JsonDocument read(@NonNull InputStream inputStream) {
-        InputStreamReader inputStreamReader = new InputStreamReader(inputStream, StandardCharsets.UTF_8);
-        try {
+        try (InputStreamReader inputStreamReader = new InputStreamReader(inputStream, StandardCharsets.UTF_8)) {
             return this.read(inputStreamReader);
-        } finally {
-            Scopes.throwRuntime(inputStreamReader::close);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -859,13 +857,12 @@ public class JsonDocument {
      */
     @Contract("_ -> this")
     public JsonDocument read(@NonNull Reader reader) {
-        BufferedReader bufferedReader = new BufferedReader(reader);
-        try {
+        try (BufferedReader bufferedReader = new BufferedReader(reader)) {
             this.append(JsonParser.parseReader(bufferedReader).getAsJsonObject());
 
             return this;
-        } finally {
-            Scopes.throwRuntime(bufferedReader::close);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 
