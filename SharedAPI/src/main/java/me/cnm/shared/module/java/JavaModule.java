@@ -69,6 +69,7 @@ public abstract class JavaModule {
      * Method called when the module should start
      */
     @ApiStatus.OverrideOnly
+    @SuppressWarnings("EmptyMethod")
     public void start() {
 
     }
@@ -78,6 +79,7 @@ public abstract class JavaModule {
      * All resources should be released in here
      */
     @ApiStatus.OverrideOnly
+    @SuppressWarnings("EmptyMethod")
     public void stop() {
 
     }

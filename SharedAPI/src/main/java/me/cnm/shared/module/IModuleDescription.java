@@ -7,7 +7,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 
 /**
- * All important information of an module.json
+ * All important information of a module.json
  */
 public interface IModuleDescription {
 
