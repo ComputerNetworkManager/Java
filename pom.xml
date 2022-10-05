@@ -11,7 +11,6 @@
     <modules>
         <module>SharedAPI</module>
         <module>Shared</module>
-        <module>SharedTest</module>
     </modules>
 
     <properties>
