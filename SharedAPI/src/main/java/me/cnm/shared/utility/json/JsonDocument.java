@@ -20,7 +20,7 @@ import java.util.List;
  * This class simplifies the handling, conversion and much mor of java objects and json
  */
 @SuppressWarnings({"unused", "BooleanMethodIsAlwaysInverted", "UnusedReturnValue"})
-public class JsonDocument extends JsonDocumentGet<JsonDocument> {
+public class JsonDocument extends JsonDocumentGetDef<JsonDocument> {
 
     /**
      * The {@link GsonSupplier used}
