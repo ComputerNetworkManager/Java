@@ -1,6 +1,7 @@
 package me.cnm.impl.shared.module.java;
 
 import me.cnm.shared.IHandlerLibrary;
+import me.cnm.shared.module.IModuleDescription;
 import me.cnm.shared.module.exception.ModuleInterpreterException;
 import me.cnm.shared.module.java.JavaModule;
 import me.cnm.shared.module.loading.IModule;
@@ -9,7 +10,6 @@ import me.cnm.shared.utility.json.JsonDocument;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
 import java.util.HashMap;
@@ -64,25 +64,15 @@ public class JavaInterpreter implements IModuleInterpreter {
         try {
             ModuleInformation moduleInformation = Objects.requireNonNull(this.modules.get(module));
 
-            JavaModule javaModule = moduleInformation.getMainClass().getDeclaredConstructor().newInstance();
-
-            Field handlerLibraryField = JavaModule.class.getDeclaredField("handlerLibrary");
-            Field moduleDescriptionField = JavaModule.class.getDeclaredField("moduleDescription");
-            Field dataFolderField = JavaModule.class.getDeclaredField("dataFolder");
-
-            handlerLibraryField.setAccessible(true);
-            moduleDescriptionField.setAccessible(true);
-            dataFolderField.setAccessible(true);
-
-            handlerLibraryField.set(javaModule, this.handlerLibrary);
-            moduleDescriptionField.set(javaModule, module.getModuleDescription());
-            dataFolderField.set(javaModule, module.getDataFolder());
+            JavaModule javaModule = moduleInformation.getMainClass()
+                    .getDeclaredConstructor(IHandlerLibrary.class, IModuleDescription.class, File.class)
+                    .newInstance(this.handlerLibrary, module.getModuleDescription(), module.getDataFolder());
 
             moduleInformation.setMainInstance(javaModule);
             module.setRunning(true);
             javaModule.start();
         } catch (NoSuchMethodException | InvocationTargetException |
-                 InstantiationException | IllegalAccessException | NoSuchFieldException e) {
+                 InstantiationException | IllegalAccessException e) {
             throw new ModuleInterpreterException(e);
         }
     }

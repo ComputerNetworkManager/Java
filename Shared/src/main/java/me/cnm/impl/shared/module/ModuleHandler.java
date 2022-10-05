@@ -70,13 +70,14 @@ public class ModuleHandler implements IModuleHandler {
         String name = description.getName();
 
         for (String dependency : description.getDependencies()) {
-            if (this.get(dependency) == null) throw new ModuleDependencyException(name, dependency, false, "loaded");
+            if (this.get(dependency) == null) throw new ModuleDependencyException(name, dependency, false,
+                    ModuleDependencyException.Type.LOADED);
         }
 
         for (String dependency : description.getSoftDependencies()) {
             if (this.get(dependency) == null) {
                 try {
-                    throw new ModuleDependencyException(name, dependency, true, "loaded");
+                    throw new ModuleDependencyException(name, dependency, true, ModuleDependencyException.Type.LOADED);
                 } catch (ModuleDependencyException e) {
                     this.handlerLibrary.getHandler(ILogHandler.class).warn(e.getMessage());
                 }
@@ -85,7 +86,8 @@ public class ModuleHandler implements IModuleHandler {
 
         IModuleInterpreter interpreter = this.getInterpreter(description.getLanguage());
         if (interpreter == null)
-            throw new ModuleDependencyException(name, description + " (interpreter)", true, "loaded");
+            throw new ModuleDependencyException(name, description + " (interpreter)", true,
+                    ModuleDependencyException.Type.LOADED);
 
         this.modules.put(description.getName(), module);
         interpreter.loadModule(module);
@@ -97,14 +99,14 @@ public class ModuleHandler implements IModuleHandler {
 
         for (String dependency : module.getModuleDescription().getDependencies()) {
             if (!Objects.requireNonNull(this.get(dependency)).isRunning())
-                throw new ModuleDependencyException(name, dependency, false, "stared");
+                throw new ModuleDependencyException(name, dependency, false, ModuleDependencyException.Type.STARTED);
 
         }
 
         for (String dependency : module.getModuleDescription().getSoftDependencies()) {
             if (!Objects.requireNonNull(this.get(dependency)).isRunning()) {
                 try {
-                    throw new ModuleDependencyException(name, dependency, true, "stared");
+                    throw new ModuleDependencyException(name, dependency, true, ModuleDependencyException.Type.STARTED);
                 } catch (ModuleDependencyException e) {
                     this.handlerLibrary.getHandler(ILogHandler.class).warn(e.getMessage());
                 }
@@ -123,11 +125,11 @@ public class ModuleHandler implements IModuleHandler {
             String dependency = targetModule.getModuleDescription().getName();
 
             if (targetModule.getModuleDescription().getDependencies().contains(name) && targetModule.isRunning())
-                throw new ModuleDependencyException(name, dependency, false, "stopped");
+                throw new ModuleDependencyException(name, dependency, false, ModuleDependencyException.Type.STOPPED);
 
             if (targetModule.getModuleDescription().getSoftDependencies().contains(name) && targetModule.isRunning()) {
                 try {
-                    throw new ModuleDependencyException(name, dependency, true, "stopped");
+                    throw new ModuleDependencyException(name, dependency, true, ModuleDependencyException.Type.STOPPED);
                 } catch (ModuleDependencyException e) {
                     this.handlerLibrary.getHandler(ILogHandler.class).warn(e.getMessage());
                 }
@@ -146,11 +148,11 @@ public class ModuleHandler implements IModuleHandler {
             String dependency = targetModule.getModuleDescription().getName();
 
             if (targetModule.getModuleDescription().getDependencies().contains(name))
-                throw new ModuleDependencyException(name, dependency, false, "unloaded");
+                throw new ModuleDependencyException(name, dependency, false, ModuleDependencyException.Type.UNLOADED);
 
             if (targetModule.getModuleDescription().getSoftDependencies().contains(name)) {
                 try {
-                    throw new ModuleDependencyException(name, dependency, true, "unloaded");
+                    throw new ModuleDependencyException(name, dependency, true, ModuleDependencyException.Type.UNLOADED);
                 } catch (ModuleDependencyException e) {
                     this.handlerLibrary.getHandler(ILogHandler.class).warn(e.getMessage());
                 }

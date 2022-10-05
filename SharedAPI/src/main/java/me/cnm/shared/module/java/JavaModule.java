@@ -17,19 +17,25 @@ public abstract class JavaModule {
      * The handler library, automatically set when loaded
      */
     @ApiStatus.Internal
-    private IHandlerLibrary handlerLibrary;
+    private final IHandlerLibrary handlerLibrary;
 
     /**
      * The module description, automatically set when loaded
      */
     @ApiStatus.Internal
-    private IModuleDescription moduleDescription;
+    private final IModuleDescription moduleDescription;
 
     /**
      * The data folder of the module, automatically set when loaded
      */
     @ApiStatus.Internal
-    private File dataFolder;
+    private final File dataFolder;
+
+    protected JavaModule(IHandlerLibrary handlerLibrary, IModuleDescription moduleDescription, File dataFolder) {
+        this.handlerLibrary = handlerLibrary;
+        this.moduleDescription = moduleDescription;
+        this.dataFolder = dataFolder;
+    }
 
     /**
      * @return The handler library

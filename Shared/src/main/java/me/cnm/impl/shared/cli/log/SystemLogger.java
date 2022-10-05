@@ -30,6 +30,7 @@ public class SystemLogger {
         this.logger.log(this.toLog4JLevel(logLevel), message, throwable);
     }
 
+    @SuppressWarnings("java:S1192")
     private void configureLogger() {
         // Load config
         JsonDocument defaultFileDocument = new JsonDocument()
