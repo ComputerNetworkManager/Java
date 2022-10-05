@@ -52,13 +52,11 @@ public class CLIHandler implements ICLIHandler {
         // Component
         this.defaultCLIComponent = new DefaultCLIComponent();
         this.defaultCLI = new DefaultCLI(this.commandHandler, this.logHandler, this.consoleHandler, consoleStream, systemLogger);
-
-        // Start
-        this.resetComponent();
-        this.consoleHandler.startListen();
     }
 
-    public void startCLI() {
+    public void start() {
+        this.resetComponent();
+        this.consoleHandler.startListen();
     }
 
     @Override

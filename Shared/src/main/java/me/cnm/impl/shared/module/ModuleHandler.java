@@ -24,6 +24,8 @@ public class ModuleHandler implements IModuleHandler {
     private final List<ModuleInterpreterHolder> moduleInterpreters = new ArrayList<>();
     private final Map<String, IModule> modules = new HashMap<>();
 
+    private final ModuleLoader moduleLoader;
+
     private final IHandlerLibrary handlerLibrary;
 
     public ModuleHandler(IHandlerLibrary handlerLibrary) {
@@ -31,9 +33,15 @@ public class ModuleHandler implements IModuleHandler {
 
         this.registerInterpreter("java", new JavaInterpreter(this.handlerLibrary));
 
-        ModuleLoader moduleLoader = new ModuleLoader(this.handlerLibrary.getHandler(ILogHandler.class), this);
-        moduleLoader.load();
-        Runtime.getRuntime().addShutdownHook(new Thread(moduleLoader::stop));
+        this.moduleLoader = new ModuleLoader(this.handlerLibrary.getHandler(ILogHandler.class), this);
+    }
+
+    public void start() {
+        this.moduleLoader.load();
+    }
+
+    public void stop() {
+        this.moduleLoader.stop();
     }
 
     @Override
