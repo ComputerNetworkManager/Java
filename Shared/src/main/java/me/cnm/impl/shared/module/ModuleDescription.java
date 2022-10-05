@@ -82,11 +82,9 @@ public class ModuleDescription implements IModuleDescription {
         List<String> list = new ArrayList<>();
 
         for (JsonElement element : jsonArray) {
-            if (!element.isJsonPrimitive()) continue;
-            JsonPrimitive primitive = element.getAsJsonPrimitive();
-            if (!primitive.isString()) continue;
-
-            list.add(primitive.getAsString());
+            try {
+                list.add(element.getAsString());
+            } catch (IllegalStateException ignored) { }
         }
 
         return list;

@@ -42,21 +42,21 @@ public class JavaInterpreter implements IModuleInterpreter {
                     "exist.");
         }
 
-        ModuleClassLoader classLoader;
         try {
-            classLoader = new ModuleClassLoader(this, jarFile, this.getClass().getClassLoader());
+            @SuppressWarnings("java:S2095")
+            ModuleClassLoader classLoader = new ModuleClassLoader(this, jarFile, this.getClass().getClassLoader());
+
+            Class<?> mainClass = classLoader.findClass(main, false);
+
+            if (!JavaModule.class.isAssignableFrom(mainClass)) {
+                throw new IllegalStateException("The main class of " + module.getModuleDescription().getName() + " doesn't " +
+                        "extend from JavaModule.");
+            }
+
+            this.modules.put(module, new ModuleInformation(classLoader, mainClass.asSubclass(JavaModule.class)));
         } catch (MalformedURLException e) {
             throw new ModuleInterpreterException(e);
         }
-
-        Class<?> mainClass = classLoader.findClass(main, false);
-
-        if (!JavaModule.class.isAssignableFrom(mainClass)) {
-            throw new IllegalStateException("The main class of " + module.getModuleDescription().getName() + " doesn't " +
-                    "extend from JavaModule.");
-        }
-
-        this.modules.put(module, new ModuleInformation(classLoader, mainClass.asSubclass(JavaModule.class)));
     }
 
     @Override
@@ -82,7 +82,7 @@ public class JavaInterpreter implements IModuleInterpreter {
             module.setRunning(true);
             javaModule.start();
         } catch (NoSuchMethodException | InvocationTargetException |
-                InstantiationException | IllegalAccessException | NoSuchFieldException e) {
+                 InstantiationException | IllegalAccessException | NoSuchFieldException e) {
             throw new ModuleInterpreterException(e);
         }
     }
