@@ -39,7 +39,7 @@ public class FormatHandler implements IFormatHandler {
 
     @Override
     public double formatDouble(double value, int decimals) {
-        return new BigDecimal(value)
+        return BigDecimal.valueOf(value)
                 .setScale(decimals, RoundingMode.HALF_UP)
                 .doubleValue();
     }

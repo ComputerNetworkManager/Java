@@ -2,6 +2,7 @@ package me.cnm.shared.utility.scope;
 
 import lombok.NonNull;
 import lombok.experimental.UtilityClass;
+import me.cnm.shared.utility.scope.exception.ScopeRuntimeException;
 import me.cnm.shared.utility.scope.fi.ThrowRunnable;
 import me.cnm.shared.utility.scope.fi.ThrowSupplier;
 import org.jetbrains.annotations.Nullable;
@@ -40,7 +41,7 @@ public class Scopes {
             runnable.run();
         } catch (Exception e) {
             if (e instanceof RuntimeException ex) throw ex;
-            else throw new RuntimeException(e);
+            else throw new ScopeRuntimeException(e);
         }
     }
 
@@ -57,7 +58,7 @@ public class Scopes {
             return supplier.get();
         } catch (Exception e) {
             if (e instanceof RuntimeException ex) throw ex;
-            else throw new RuntimeException(e);
+            else throw new ScopeRuntimeException(e);
         }
     }
 

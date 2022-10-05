@@ -7,11 +7,10 @@
     <groupId>me.cnm</groupId>
     <artifactId>Java</artifactId>
     <packaging>pom</packaging>
-    <version>0.0.0</version>
+    <version>1.0-dev1</version>
     <modules>
         <module>SharedAPI</module>
         <module>Shared</module>
-        <module>SharedTest</module>
     </modules>
 
     <properties>

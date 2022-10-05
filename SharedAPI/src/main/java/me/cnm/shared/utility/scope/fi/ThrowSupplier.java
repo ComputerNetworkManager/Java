@@ -18,6 +18,7 @@ public interface ThrowSupplier<T> {
      * @throws Exception Can be thrown
      * @see Supplier#get()
      */
+    @SuppressWarnings("java:S112")
     T get() throws Exception;
 
 }

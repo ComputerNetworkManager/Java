@@ -14,6 +14,7 @@ public interface ThrowRunnable {
      * @throws Exception Can be thrown
      * @see Runnable#run()
      */
+    @SuppressWarnings("java:S112")
     void run() throws Exception;
 
 }

@@ -19,28 +19,25 @@ public class ModuleClassLoader extends URLClassLoader {
     }
 
     @Override
-    protected Class<?> findClass(String name) throws ClassNotFoundException {
+    protected Class<?> findClass(String name) {
         return this.findClass(name, true);
     }
 
-    protected Class<?> findClass(String name, boolean checkGlobal) throws ClassNotFoundException {
-        Class<?> result = classes.get(name);
+    protected Class<?> findClass(String name, boolean checkGlobal) {
+        return this.classes.computeIfAbsent(name, key -> {
+            Class<?> supply = null;
+            if (checkGlobal) supply = this.javaInterpreter.getClassByName(name);
 
-        if (result == null) {
-            if (checkGlobal) result = this.javaInterpreter.getClassByName(name);
+            if (supply == null) {
+                try {
+                    supply = super.findClass(name);
+                } catch (ClassNotFoundException ignored) { }
 
-            if (result == null) {
-                result = super.findClass(name);
-
-                if (result != null) this.javaInterpreter.setClass(name, result);
+                if (supply != null) this.javaInterpreter.setClass(name, supply);
             }
 
-            this.classes.put(name, result);
-        }
-
-        if (result == null) throw new ClassNotFoundException(name);
-
-        return result;
+            return supply;
+        });
     }
 
     public Map<String, Class<?>> getLoadedClasses() {

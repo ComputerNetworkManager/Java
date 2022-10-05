@@ -37,6 +37,7 @@ public class CLIHandler implements ICLIHandler {
     private final ILogHandler logHandler;
 
     public CLIHandler(IHandlerLibrary handlerLibrary) {
+        @SuppressWarnings("java:S106")
         PrintStream consoleStream = System.out;
 
         this.handlerLibrary = handlerLibrary;

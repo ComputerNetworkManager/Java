@@ -5,6 +5,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonPrimitive;
 import lombok.Getter;
 import me.cnm.shared.module.IModuleDescription;
+import me.cnm.shared.module.exception.IllegalModuleDescriptionException;
 import me.cnm.shared.utility.json.JsonDocument;
 import me.cnm.shared.utility.scope.Scopes;
 import org.jetbrains.annotations.Contract;
@@ -53,18 +54,18 @@ public class ModuleDescription implements IModuleDescription {
     @Contract("_, true, _ -> !null")
     private String getString(String name, boolean required, String moduleName) {
         if (!this.jsonDocument.contains(name) && required)
-            throw new IllegalStateException("The module.json of " + moduleName + " doesn't contain " +
-                    "required attribute " + name);
+            throw new IllegalModuleDescriptionException(moduleName, name,
+                    IllegalModuleDescriptionException.Type.REQUIRED);
 
         JsonElement jsonElement = this.jsonDocument.get(name);
         if (!Boolean.TRUE.equals(Scopes.ifNotNull(jsonElement, JsonElement::isJsonPrimitive)) && required)
-            throw new IllegalStateException("The type of the attribute " + name + " of the module.json of " +
-                    moduleName + " must be a string");
+            throw new IllegalModuleDescriptionException(moduleName, name,
+                    IllegalModuleDescriptionException.Type.WRONG_TYPE, "string");
 
         JsonPrimitive jsonPrimitive = Scopes.ifNotNull(jsonElement, JsonElement::getAsJsonPrimitive);
         if (!Boolean.TRUE.equals(Scopes.ifNotNull(jsonPrimitive, JsonPrimitive::isString)) && required)
-            throw new IllegalStateException("The type of the attribute " + name + " of the module.json of " +
-                    moduleName + " must be a string");
+            throw new IllegalModuleDescriptionException(moduleName, name,
+                    IllegalModuleDescriptionException.Type.WRONG_TYPE, "string");
 
         return Scopes.ifNotNull(jsonPrimitive, JsonPrimitive::getAsString);
     }
@@ -74,18 +75,16 @@ public class ModuleDescription implements IModuleDescription {
         if (jsonElement == null) return new ArrayList<>();
 
         if (!jsonElement.isJsonArray())
-            throw new IllegalStateException("The type of the attribute " + name + "of the module.json of " +
-                    moduleName + " must be an array");
+            throw new IllegalModuleDescriptionException(moduleName, name,
+                    IllegalModuleDescriptionException.Type.WRONG_TYPE, "array");
 
         JsonArray jsonArray = jsonElement.getAsJsonArray();
         List<String> list = new ArrayList<>();
 
         for (JsonElement element : jsonArray) {
-            if (!element.isJsonPrimitive()) continue;
-            JsonPrimitive primitive = element.getAsJsonPrimitive();
-            if (!primitive.isString()) continue;
-
-            list.add(primitive.getAsString());
+            try {
+                list.add(element.getAsString());
+            } catch (IllegalStateException ignored) { }
         }
 
         return list;

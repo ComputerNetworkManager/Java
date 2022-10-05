@@ -9,11 +9,11 @@ import java.io.IOException;
 import static org.junit.jupiter.api.Assertions.*;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class ScopeTest {
+class ScopeTest {
 
     @Test
     @Order(1)
-    public void testScope() {
+    void testScope() {
         assertNull(Scopes.ifNotNull(null, value -> "test"));
         assertArrayEquals(new String[]{"te", "st"}, Scopes.ifNotNull("te st", value -> value.split(" ")));
 

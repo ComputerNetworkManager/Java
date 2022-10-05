@@ -1,7 +1,10 @@
 package me.cnm.shared.module;
 
-import me.cnm.shared.module.loading.IModuleInterpreter;
+import me.cnm.shared.module.exception.IllegalModuleDescriptionException;
+import me.cnm.shared.module.exception.ModuleDescriptionNotFoundException;
+import me.cnm.shared.module.exception.ModuleInterpreterException;
 import me.cnm.shared.module.loading.IModule;
+import me.cnm.shared.module.loading.IModuleInterpreter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -25,44 +28,45 @@ public interface IModuleHandler {
      *
      * @param file The directory of the module
      * @return The module
-     * @throws IllegalArgumentException If the file is not a directory
-     * @throws IllegalStateException    If the module.json isn't correct or not all modules specified as
-     *                                  dependencies are loaded
-     * @throws Exception                If the load fails
+     * @throws IllegalArgumentException           If the file is not a directory
+     * @throws ModuleDescriptionNotFoundException If the module.json doesn't exist
+     * @throws IllegalModuleDescriptionException  If the module.json contains illegal content
+     * @throws ModuleInterpreterException         If the interpreter fails to load the module
      * @see IModule
      */
     @NotNull
-    IModule loadModule(@NotNull File file) throws Exception;
+    IModule loadModule(@NotNull File file) throws IllegalArgumentException, ModuleDescriptionNotFoundException,
+            IllegalModuleDescriptionException, ModuleInterpreterException;
 
     /**
      * Start a module previously loaded by {@link #loadModule(File)}
      *
      * @param module The module to start
-     * @throws IllegalStateException If the module is running or not all modules specified as
-     *                               dependencies are started
-     * @throws Exception             If the start fails
+     * @throws IllegalStateException      If the module is running or not all modules specified as
+     *                                    dependencies are started
+     * @throws ModuleInterpreterException If the interpreter fails to start the module
      */
-    void startModule(@NotNull IModule module) throws Exception;
+    void startModule(@NotNull IModule module) throws ModuleInterpreterException;
 
     /**
      * Stop a module, witch means ensure, that all used resources are freed, e.g. command are unregistered etc.
      *
      * @param module The module to stop
-     * @throws IllegalStateException If the module is not running or some modules witch specified
-     *                               this module as dependency are running
-     * @throws Exception             If the stop fails
+     * @throws IllegalStateException      If the module is not running or some modules witch specified
+     *                                    this module as dependency are running
+     * @throws ModuleInterpreterException If the interpreter fails to stop the module
      */
-    void stopModule(@NotNull IModule module) throws Exception;
+    void stopModule(@NotNull IModule module) throws ModuleInterpreterException;
 
     /**
      * Unload a module, witch mens free it from being used by the process and be allowed to delete, override, etc. module files
      *
      * @param module The module to unload
-     * @throws IllegalStateException If the module is running or some modules witch specified
-     *                               this module as dependency are loaded
-     * @throws Exception             If the unload fails
+     * @throws IllegalStateException      If the module is running or some modules witch specified
+     *                                    this module as dependency are loaded
+     * @throws ModuleInterpreterException If the interpreter fails to unload the module
      */
-    void unloadModule(@NotNull IModule module) throws Exception;
+    void unloadModule(@NotNull IModule module) throws ModuleInterpreterException;
 
     /**
      * Get a module by its name<br>

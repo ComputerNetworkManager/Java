@@ -1,6 +1,8 @@
 package me.cnm.impl.shared.module.java;
 
 import me.cnm.shared.IHandlerLibrary;
+import me.cnm.shared.module.IModuleDescription;
+import me.cnm.shared.module.exception.ModuleInterpreterException;
 import me.cnm.shared.module.java.JavaModule;
 import me.cnm.shared.module.loading.IModule;
 import me.cnm.shared.module.loading.IModuleInterpreter;
@@ -8,7 +10,6 @@ import me.cnm.shared.utility.json.JsonDocument;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
 import java.util.HashMap;
@@ -26,7 +27,7 @@ public class JavaInterpreter implements IModuleInterpreter {
     }
 
     @Override
-    public void loadModule(IModule module) throws MalformedURLException, ClassNotFoundException {
+    public void loadModule(IModule module) throws ModuleInterpreterException {
         JsonDocument additional = module.getModuleDescription().getAdditional();
         if (!additional.contains("main"))
             throw new IllegalStateException("The module.json of " + module.getModuleDescription().getName() + " doesn't" +
@@ -41,39 +42,39 @@ public class JavaInterpreter implements IModuleInterpreter {
                     "exist.");
         }
 
-        ModuleClassLoader classLoader = new ModuleClassLoader(this, jarFile, this.getClass().getClassLoader());
-        Class<?> mainClass = classLoader.findClass(main, false);
+        try {
+            @SuppressWarnings("java:S2095")
+            ModuleClassLoader classLoader = new ModuleClassLoader(this, jarFile, this.getClass().getClassLoader());
 
-        if (!JavaModule.class.isAssignableFrom(mainClass)) {
-            throw new IllegalStateException("The main class of " + module.getModuleDescription().getName() + " doesn't " +
-                    "extend from JavaModule.");
+            Class<?> mainClass = classLoader.findClass(main, false);
+
+            if (!JavaModule.class.isAssignableFrom(mainClass)) {
+                throw new IllegalStateException("The main class of " + module.getModuleDescription().getName() + " doesn't " +
+                        "extend from JavaModule.");
+            }
+
+            this.modules.put(module, new ModuleInformation(classLoader, mainClass.asSubclass(JavaModule.class)));
+        } catch (MalformedURLException e) {
+            throw new ModuleInterpreterException(e);
         }
-
-        this.modules.put(module, new ModuleInformation(classLoader, mainClass.asSubclass(JavaModule.class)));
     }
 
     @Override
-    public void startModule(IModule module) throws NoSuchMethodException, InvocationTargetException,
-            InstantiationException, IllegalAccessException, NoSuchFieldException {
-        ModuleInformation moduleInformation = Objects.requireNonNull(this.modules.get(module));
+    public void startModule(IModule module) throws ModuleInterpreterException {
+        try {
+            ModuleInformation moduleInformation = Objects.requireNonNull(this.modules.get(module));
 
-        JavaModule javaModule = moduleInformation.getMainClass().getDeclaredConstructor().newInstance();
+            JavaModule javaModule = moduleInformation.getMainClass()
+                    .getDeclaredConstructor(IHandlerLibrary.class, IModuleDescription.class, File.class)
+                    .newInstance(this.handlerLibrary, module.getModuleDescription(), module.getDataFolder());
 
-        Field handlerLibrary = JavaModule.class.getDeclaredField("handlerLibrary");
-        Field moduleDescription = JavaModule.class.getDeclaredField("moduleDescription");
-        Field dataFolder = JavaModule.class.getDeclaredField("dataFolder");
-
-        handlerLibrary.setAccessible(true);
-        moduleDescription.setAccessible(true);
-        dataFolder.setAccessible(true);
-
-        handlerLibrary.set(javaModule, this.handlerLibrary);
-        moduleDescription.set(javaModule, module.getModuleDescription());
-        dataFolder.set(javaModule, module.getDataFolder());
-
-        moduleInformation.setMainInstance(javaModule);
-        module.setRunning(true);
-        javaModule.start();
+            moduleInformation.setMainInstance(javaModule);
+            module.setRunning(true);
+            javaModule.start();
+        } catch (NoSuchMethodException | InvocationTargetException |
+                 InstantiationException | IllegalAccessException e) {
+            throw new ModuleInterpreterException(e);
+        }
     }
 
     @Override
@@ -88,37 +89,37 @@ public class JavaInterpreter implements IModuleInterpreter {
     }
 
     @Override
-    public void unloadModule(IModule module) throws IOException {
+    public void unloadModule(IModule module) throws ModuleInterpreterException {
         ModuleInformation moduleInformation = Objects.requireNonNull(this.modules.get(module));
 
         ModuleClassLoader classLoader = moduleInformation.getClassLoader();
         for (String name : classLoader.getLoadedClasses().keySet()) this.classes.remove(name);
 
-        classLoader.close();
+        try {
+            classLoader.close();
+        } catch (IOException e) {
+            throw new ModuleInterpreterException(e);
+        }
 
         this.modules.remove(module);
-
-        System.gc();
     }
 
-    public Class<?> getClassByName(String name) throws ClassNotFoundException {
+    public Class<?> getClassByName(String name) {
         Class<?> target = this.classes.get(name);
 
         if (target != null) return target;
 
         for (ModuleInformation value : this.modules.values()) {
-            try {
-                target = value.getClassLoader().findClass(name, false);
-            } catch (ClassNotFoundException ignored) {}
+            target = value.getClassLoader().findClass(name, false);
 
             if (target != null) return target;
         }
 
-        throw new ClassNotFoundException(name);
+        return null;
     }
 
     public void setClass(String name, Class<?> clazz) {
-        if (!this.classes.containsKey(name)) this.classes.put(name, clazz);
+        this.classes.computeIfAbsent(name, key -> clazz);
     }
 
 }

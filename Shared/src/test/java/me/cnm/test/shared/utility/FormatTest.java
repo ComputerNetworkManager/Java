@@ -32,7 +32,7 @@ public class FormatTest {
 
     @Test
     @Order(1)
-    public void testNumbers() {
+    void testNumbers() {
         assertEquals(15.12, formatHandler.formatDouble(15.1223));
         assertEquals(15.1, formatHandler.formatDouble(15.0879, 1));
         assertEquals("1 byte", formatHandler.formatBytes(1));
@@ -47,7 +47,7 @@ public class FormatTest {
 
     @Test
     @Order(2)
-    public void testTime() {
+    void testTime() {
         assertEquals("29 11 359 17 10937 16 262494 20 15749660 41 944979641",
                 formatHandler.formatTimeDiff(0, 944979641349L,
                         "%y %mo %fmo %d %fd %h %fh %m %fm %s %fs"));

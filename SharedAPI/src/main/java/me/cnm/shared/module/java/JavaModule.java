@@ -17,19 +17,34 @@ public abstract class JavaModule {
      * The handler library, automatically set when loaded
      */
     @ApiStatus.Internal
-    private IHandlerLibrary handlerLibrary;
+    private final IHandlerLibrary handlerLibrary;
 
     /**
      * The module description, automatically set when loaded
      */
     @ApiStatus.Internal
-    private IModuleDescription moduleDescription;
+    private final IModuleDescription moduleDescription;
 
     /**
      * The data folder of the module, automatically set when loaded
      */
     @ApiStatus.Internal
-    private File dataFolder;
+    private final File dataFolder;
+
+    /**
+     * Super constructor, witch should be called to set all attributes<br>
+     * Nothing on the passed attributes should be changed, nor should the constructor of any module to something<br>
+     * For the startup of the module use the {@link #start()} method!
+     *
+     * @param handlerLibrary    The {@code HandlerLibrary} to be set
+     * @param moduleDescription The {@code ModuleDescription} to be set
+     * @param dataFolder        The {@code DataFolder} to be set
+     */
+    protected JavaModule(IHandlerLibrary handlerLibrary, IModuleDescription moduleDescription, File dataFolder) {
+        this.handlerLibrary = handlerLibrary;
+        this.moduleDescription = moduleDescription;
+        this.dataFolder = dataFolder;
+    }
 
     /**
      * @return The handler library
@@ -51,6 +66,7 @@ public abstract class JavaModule {
 
     /**
      * The data folder is the "root" folder of the module (same as the folder where the module.json is located)
+     *
      * @return The data folder of the module
      */
     @NotNull
@@ -63,6 +79,7 @@ public abstract class JavaModule {
      * Method called when the module should start
      */
     @ApiStatus.OverrideOnly
+    @SuppressWarnings("EmptyMethod")
     public void start() {
 
     }
@@ -72,6 +89,7 @@ public abstract class JavaModule {
      * All resources should be released in here
      */
     @ApiStatus.OverrideOnly
+    @SuppressWarnings("EmptyMethod")
     public void stop() {
 
     }

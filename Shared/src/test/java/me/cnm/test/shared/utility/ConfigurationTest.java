@@ -12,7 +12,7 @@ import java.io.File;
 import static org.junit.jupiter.api.Assertions.*;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class ConfigurationTest {
+class ConfigurationTest {
 
     private static IConfigurationHandler configurationHandler;
     private static JsonDocument oldConfig;
@@ -37,7 +37,7 @@ public class ConfigurationTest {
 
     @Test
     @Order(1)
-    public void testSave() {
+    void testSave() {
         assertDoesNotThrow(() -> {
             configurationHandler.saveEntry("byteTest", (byte) 8);
             configurationHandler.saveEntry("shortTest", (short) 79);
@@ -58,7 +58,7 @@ public class ConfigurationTest {
 
     @Test
     @Order(2)
-    public void testGet() {
+    void testGet() {
         assertEquals((byte) 8, configurationHandler.getEntry("byteTest", byte.class));
         assertEquals((short) 79, configurationHandler.getEntry("shortTest", short.class));
         assertEquals(15, configurationHandler.getEntry("intTest", int.class));
@@ -82,7 +82,7 @@ public class ConfigurationTest {
 
     @Test
     @Order(3)
-    public void testGetDef() {
+    void testGetDef() {
         assertEquals("test", configurationHandler.getEntry("defTest", "test", String.class));
         assertEquals("test", configurationHandler.getEntry("defTest", "abc", String.class));
     }
