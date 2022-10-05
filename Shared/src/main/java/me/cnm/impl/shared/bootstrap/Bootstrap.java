@@ -34,6 +34,10 @@ public class Bootstrap {
 
         // Register module handler
         this.handlerLibrary.registerHandler(IModuleHandler.class, new ModuleHandler(this.handlerLibrary));
+
+        try {
+
+        } catch (Exception e) {}
     }
 
     public void start() {
