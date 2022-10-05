@@ -67,7 +67,7 @@ public class ModuleDescription implements IModuleDescription {
             throw new IllegalModuleDescriptionException(moduleName, name,
                     IllegalModuleDescriptionException.Type.WRONG_TYPE, "string");
 
-        return Scopes.ifNotNull(jsonPrimitive, JsonPrimitive::getAsString);
+        return this.insureWellFormatted(moduleName, name, Scopes.ifNotNull(jsonPrimitive, JsonPrimitive::getAsString));
     }
 
     private List<String> getArray(String name, String moduleName) {
@@ -88,6 +88,16 @@ public class ModuleDescription implements IModuleDescription {
         }
 
         return list;
+    }
+
+    private String insureWellFormatted(String moduleName, String field, String test) {
+        if (test == null) return null;
+
+        if (!test.matches("[A-Za-z_-]+"))
+            throw new IllegalModuleDescriptionException(moduleName, field,
+                    IllegalModuleDescriptionException.Type.WRONG_CONTENT, "alphanumeric, with underscore and dash");
+
+        return test;
     }
 
 }
