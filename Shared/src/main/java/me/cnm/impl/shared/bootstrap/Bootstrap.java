@@ -1,5 +1,6 @@
 package me.cnm.impl.shared.bootstrap;
 
+import lombok.Getter;
 import me.cnm.impl.shared.HandlerLibrary;
 import me.cnm.impl.shared.cli.CLIHandler;
 import me.cnm.impl.shared.module.ModuleHandler;
@@ -15,25 +16,33 @@ import me.cnm.shared.utility.format.IFormatHandler;
 
 public class Bootstrap {
 
-    public IHandlerLibrary createHandlerLibrary() {
-        IHandlerLibrary handlerLibrary = new HandlerLibrary();
+    @Getter
+    private final IHandlerLibrary handlerLibrary = new HandlerLibrary();
 
+    public void registerHandlers() {
         // Register utility handlers
-        handlerLibrary.registerHandler(IUtilityHandler.class, new UtilityHandler());
-        IUtilityHandler utilityHandler = handlerLibrary.getHandler(IUtilityHandler.class);
-        handlerLibrary.registerHandler(IConfigurationHandler.class, utilityHandler.getConfigurationHandler());
-        handlerLibrary.registerHandler(IFormatHandler.class, utilityHandler.getFormatHandler());
+        IUtilityHandler utilityHandler = new UtilityHandler();
+        this.handlerLibrary.registerHandler(IUtilityHandler.class, utilityHandler);
+        this.handlerLibrary.registerHandler(IConfigurationHandler.class, utilityHandler.getConfigurationHandler());
+        this.handlerLibrary.registerHandler(IFormatHandler.class, utilityHandler.getFormatHandler());
 
         // Register CLI handlers
-        ICLIHandler cliHandler = new CLIHandler(handlerLibrary);
-        handlerLibrary.registerHandler(ICLIHandler.class, cliHandler);
-        handlerLibrary.registerHandler(ICommandHandler.class, cliHandler.getCommandHandler());
-        handlerLibrary.registerHandler(ILogHandler.class, cliHandler.getLogHandler());
+        ICLIHandler cliHandler = new CLIHandler(this.handlerLibrary);
+        this.handlerLibrary.registerHandler(ICLIHandler.class, cliHandler);
+        this.handlerLibrary.registerHandler(ICommandHandler.class, cliHandler.getCommandHandler());
+        this.handlerLibrary.registerHandler(ILogHandler.class, cliHandler.getLogHandler());
 
         // Register module handler
-        handlerLibrary.registerHandler(IModuleHandler.class, new ModuleHandler(handlerLibrary));
+        this.handlerLibrary.registerHandler(IModuleHandler.class, new ModuleHandler(this.handlerLibrary));
+    }
 
-        return handlerLibrary;
+    public void start() {
+        ((CLIHandler) this.handlerLibrary.getHandler(ICLIHandler.class)).start();
+        ((ModuleHandler) this.handlerLibrary.getHandler(IModuleHandler.class)).start();
+    }
+
+    public void stop() {
+        ((ModuleHandler) this.handlerLibrary.getHandler(IModuleHandler.class)).stop();
     }
 
 }
