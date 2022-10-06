@@ -3,7 +3,7 @@ package me.cnm.impl.shared.module;
 import lombok.NonNull;
 import me.cnm.impl.shared.module.java.JavaInterpreter;
 import me.cnm.impl.shared.module.loading.Module;
-import me.cnm.impl.shared.module.loading.ModuleInterpreterHolder;
+import me.cnm.impl.shared.module.loading.ModuleInterpeterHandler;
 import me.cnm.impl.shared.module.loading.ModuleLoader;
 import me.cnm.shared.IHandlerLibrary;
 import me.cnm.shared.cli.log.ILogHandler;
@@ -14,17 +14,17 @@ import me.cnm.shared.module.exception.ModuleDescriptionNotFoundException;
 import me.cnm.shared.module.exception.ModuleInterpreterException;
 import me.cnm.shared.module.loading.IModule;
 import me.cnm.shared.module.loading.IModuleInterpreter;
-import me.cnm.shared.utility.helper.ArrayHelper;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
-import java.util.*;
-import java.util.stream.Stream;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
-public class ModuleHandler implements IModuleHandler {
+public class ModuleHandler extends ModuleInterpeterHandler implements IModuleHandler {
 
-    private final List<ModuleInterpreterHolder> moduleInterpreters = new ArrayList<>();
     private final Map<String, IModule> modules = new HashMap<>();
 
     private final ModuleLoader moduleLoader;
@@ -173,32 +173,6 @@ public class ModuleHandler implements IModuleHandler {
     @NotNull
     public List<IModule> getAll() {
         return List.copyOf(this.modules.values());
-    }
-
-    @Override
-    public void registerInterpreter(@NonNull String language, @NonNull IModuleInterpreter interpreter, @NonNull String... aliases) {
-        for (ModuleInterpreterHolder moduleInterpreter : this.moduleInterpreters) {
-            if (ArrayHelper.containsIgnoreCase(moduleInterpreter.getLanguages().toArray(String[]::new), language) ||
-                    ArrayHelper.containsIgnoreCase(moduleInterpreter.getLanguages().toArray(String[]::new), aliases))
-                throw new IllegalStateException("An module interpreter for" + language + "/" +
-                        String.join(", ", aliases) + "already exists.");
-        }
-
-        this.moduleInterpreters.add(new ModuleInterpreterHolder(interpreter,
-                Stream.of(new String[] { language}, aliases)
-                        .flatMap(Stream::of)
-                        .toList()));
-    }
-
-    @Override
-    @Nullable
-    public IModuleInterpreter getInterpreter(@NonNull String language) {
-        for (ModuleInterpreterHolder holder : this.moduleInterpreters) {
-            if (ArrayHelper.containsIgnoreCase(holder.getLanguages().toArray(String[]::new), language))
-                return holder.getModuleInterpreter();
-        }
-
-        return null;
     }
 
 }
