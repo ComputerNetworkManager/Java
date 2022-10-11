@@ -13,22 +13,22 @@ public enum CursorDirection {
     /**
      * Move the cursor up
      */
-    UP('a'),
+    UP('A'),
 
     /**
      * Move the cursor down
      */
-    DOWN('b'),
+    DOWN('B'),
 
     /**
      * Move the cursor to the left
      */
-    LEFT('c'),
+    LEFT('C'),
 
     /**
      * Move the cursor to the right
      */
-    RIGHT('d');
+    RIGHT('D');
 
     /**
      * The code used to make this direction

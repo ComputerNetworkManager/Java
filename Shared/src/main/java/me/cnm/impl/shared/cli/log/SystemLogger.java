@@ -34,7 +34,7 @@ public class SystemLogger {
     private void configureLogger() {
         // Load config
         JsonDocument defaultFileDocument = new JsonDocument()
-                .append("pattern", "%date{HH:mm:ss.SSS} | %-5level | %replace{%message}{\u001B\\d*(;\\d+)[a-z]}{}%n")
+                .append("pattern", "%date{HH:mm:ss.SSS} | %-5level | %replace{%message}{\u001B\\[\\d+(;\\d+)*[a-zA-Z]}{}%n")
                 .append("fileName", "log/latest.log")
                 .append("filePattern", "log/%date{yyyy-MM-dd}.log");
 

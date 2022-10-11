@@ -38,7 +38,7 @@ public enum Format {
     CROSSED_OUT(9, 24),
 
     /**
-     * Make a texted dobuled underlined<br>
+     * Make a texted doubled underlined<br>
      * On some consoles this code is used as {@code not bold}
      */
     DOUBLE_UNDERLINED(21, 24);

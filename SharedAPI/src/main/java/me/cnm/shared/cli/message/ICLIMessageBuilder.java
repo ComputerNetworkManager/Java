@@ -127,22 +127,6 @@ public interface ICLIMessageBuilder {
     ICLIMessageBuilder scrollDown();
 
     /**
-     * Hide the cursor
-     *
-     * @return This instance
-     */
-    @Contract("-> this")
-    ICLIMessageBuilder hideCursor();
-
-    /**
-     * Show the cursor
-     *
-     * @return This instance
-     */
-    @Contract("-> this")
-    ICLIMessageBuilder showCursor();
-
-    /**
      * Reset all formats (including colors)
      *
      * @return This instance
@@ -153,22 +137,22 @@ public interface ICLIMessageBuilder {
     /**
      * Add a format in which to display text, added afterwards
      *
-     * @param format The format to add
+     * @param formats The format to add
      * @return This instance
      * @see Format
      */
     @Contract("_ -> this")
-    ICLIMessageBuilder addFormat(@NotNull Format format);
+    ICLIMessageBuilder addFormats(@NotNull Format... formats);
 
     /**
      * Remove a format from the text added afterwards
      *
-     * @param format The format to remove
+     * @param formats The format to remove
      * @return This instance
      * @see Format
      */
     @Contract("_ -> this")
-    ICLIMessageBuilder removeFormat(@NotNull Format format);
+    ICLIMessageBuilder removeFormats(@NotNull Format... formats);
 
     /**
      * Set the foreground-color of the text
