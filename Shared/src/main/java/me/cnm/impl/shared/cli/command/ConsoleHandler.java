@@ -1,7 +1,6 @@
 package me.cnm.impl.shared.cli.command;
 
 import me.cnm.shared.cli.component.ICLIComponent;
-import org.fusesource.jansi.Ansi;
 import org.jline.reader.LineReader;
 import org.jline.reader.LineReaderBuilder;
 import org.jline.reader.UserInterruptException;
@@ -18,6 +17,9 @@ public class ConsoleHandler {
     private final Supplier<ICLIComponent> componentSupplier;
     private final LineReader lineReader;
 
+    private boolean run = true;
+    private Thread thread;
+
     public ConsoleHandler(Supplier<ICLIComponent> componentSupplier) {
         this.componentSupplier = componentSupplier;
 
@@ -28,16 +30,23 @@ public class ConsoleHandler {
 
     public void startListen() {
         this.executorService.submit(() -> {
-            String readLine;
-            try {
-                while ((readLine = this.lineReader.readLine(Ansi.ansi()
-                        .fgBrightRed().a("CNM")
-                        .reset().a(">")
-                        .toString())) != null) {
-                    componentSupplier.get().handleInput(readLine.split(" "));
+            while (this.run) {
+                this.thread = new Thread(() -> {
+                    String readLine;
+                    try {
+                        while ((readLine = this.lineReader.readLine(componentSupplier.get().getPrompt())) != null) {
+                            componentSupplier.get().handleInput(readLine.split(" "));
+                        }
+                    } catch (UserInterruptException e) {
+                    }
+                });
+
+                this.thread.start();
+                try {
+                    this.thread.join();
+                } catch (InterruptedException e) {
+                    this.thread.interrupt();
                 }
-            } catch (UserInterruptException e) {
-                System.exit(0);
             }
         });
     }
@@ -45,6 +54,15 @@ public class ConsoleHandler {
     public void redrawLine() {
         ((LineReaderImpl) this.lineReader).redrawLine();
         ((LineReaderImpl) this.lineReader).redisplay();
+    }
+
+    public void interrupt() {
+        if (this.thread != null) this.thread.interrupt();
+    }
+
+    public void stop() {
+        this.run = false;
+        this.interrupt();
     }
 
 }

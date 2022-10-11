@@ -52,4 +52,11 @@ public interface IDefaultCLI {
      */
     void handleInput(@NotNull String[] args);
 
+    /**
+     * Get the default prompt
+     *
+     * @return The default prompt
+     */
+    String getPrompt();
+
 }

@@ -9,6 +9,8 @@ import me.cnm.shared.cli.command.ICommandHandler;
 import me.cnm.shared.cli.component.IDefaultCLI;
 import me.cnm.shared.cli.log.ILogHandler;
 import me.cnm.shared.cli.log.LogLevel;
+import me.cnm.shared.cli.message.create.CLIMessageBuilder;
+import me.cnm.shared.cli.message.option.Color;
 import org.fusesource.jansi.Ansi;
 import org.jetbrains.annotations.NotNull;
 
@@ -89,5 +91,13 @@ public class DefaultCLI implements IDefaultCLI {
         }
 
         this.consoleHandler.redrawLine();
+    }
+
+    @Override
+    public String getPrompt() {
+        return CLIMessageBuilder.create()
+                .textFg("CNM", Color.LIGHT_RED)
+                .text(">")
+                .build();
     }
 }

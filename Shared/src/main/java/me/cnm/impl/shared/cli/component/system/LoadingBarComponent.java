@@ -45,6 +45,11 @@ public class LoadingBarComponent extends AbstractCLIComponent implements ILoadin
     }
 
     @Override
+    public String getPrompt() {
+        return this.getDefaultCLI().getPrompt();
+    }
+
+    @Override
     public void setPercentage(double percentage) {
         if (this.finished) return;
 

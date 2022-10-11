@@ -43,6 +43,7 @@ public class Bootstrap {
 
     public void stop() {
         ((ModuleHandler) this.handlerLibrary.getHandler(IModuleHandler.class)).stop();
+        ((CLIHandler) this.handlerLibrary.getHandler(ICLIHandler.class)).getConsoleHandler().stop();
     }
 
 }
