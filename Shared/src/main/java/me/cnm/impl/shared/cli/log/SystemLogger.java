@@ -34,16 +34,18 @@ public class SystemLogger {
     private void configureLogger() {
         // Load config
         JsonDocument defaultFileDocument = new JsonDocument()
-                .append("pattern", "%d{HH:mm:ss.SSS} | %-5p | %m%n")
+                .append("pattern", "%date{HH:mm:ss.SSS} | %-5level | %replace{%message}{\u001B\\[\\d+(;\\d+)*[a-zA-Z]}{}%n")
                 .append("fileName", "log/latest.log")
-                .append("filePattern", "log/%d{yyyy-MM-dd}.log");
+                .append("filePattern", "log/%date{yyyy-MM-dd}.log");
 
         JsonDocument configuration = this.handlerLibrary.getHandler(IConfigurationHandler.class)
                 .getEntry("logger", new JsonDocument()
                                 .append("level", LogLevel.INFO)
-                                .append("console", "%d{HH:mm:ss.SSS} | %-5p | %m%n")
+                                .append("console", "%date{HH:mm:ss.SSS} | %-5level | %message%n")
                                 .append("file", defaultFileDocument),
                         JsonDocument.class);
+
+        JsonDocument fileDocument = configuration.getDocument("file", defaultFileDocument);
 
         Level logLevel = this.toLog4JLevel(configuration.get("level", LogLevel.DEBUG, LogLevel.class));
 
@@ -52,26 +54,27 @@ public class SystemLogger {
         builder.setStatusLevel(logLevel);
 
         // Layout
-        LayoutComponentBuilder layoutBuilder = builder.newLayout("PatternLayout")
+        LayoutComponentBuilder consoleLayoutBuilder = builder.newLayout("PatternLayout")
                 .addAttribute("pattern", configuration.getString("console"));
+
+        LayoutComponentBuilder fileLayoutBuilder = builder.newLayout("PatternLayout")
+                .addAttribute("pattern", fileDocument.getString("pattern"));
 
         // Console
         AppenderComponentBuilder consoleComponent = builder.newAppender("Console", "Console")
                 .addAttribute("target", ConsoleAppender.Target.SYSTEM_OUT)
-                .add(layoutBuilder);
+                .add(consoleLayoutBuilder);
 
         // File
-        JsonDocument file = configuration.getDocument("file", defaultFileDocument);
-
         ComponentBuilder<?> triggerPolicy = builder.newComponent("Policies")
                 .addComponent(builder.newComponent("TimeBasedTriggeringPolicy")
                         .addAttribute("interval", 1)
                         .addAttribute("modulate", true));
 
         AppenderComponentBuilder rollingFile = builder.newAppender("RollingFile", "RollingFile")
-                .addAttribute("fileName", file.getString("fileName", "log/latest.log"))
-                .addAttribute("filePattern", file.getString("filePattern", "log/%{yyyy-MM-dd}.log"))
-                .add(layoutBuilder)
+                .addAttribute("fileName", fileDocument.getString("fileName", "log/latest.log"))
+                .addAttribute("filePattern", fileDocument.getString("filePattern", "log/%{yyyy-MM-dd}.log"))
+                .add(fileLayoutBuilder)
                 .addComponent(triggerPolicy);
 
         // Configure
