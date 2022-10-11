@@ -11,6 +11,7 @@
     <modules>
         <module>SharedAPI</module>
         <module>Shared</module>
+        <module>Client</module>
     </modules>
 
     <properties>
