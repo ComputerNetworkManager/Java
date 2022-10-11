@@ -1,4 +1,4 @@
-package me.cnm.shared.cli.print;
+package me.cnm.shared.cli.message;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

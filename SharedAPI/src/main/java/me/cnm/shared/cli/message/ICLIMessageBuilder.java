@@ -1,4 +1,4 @@
-package me.cnm.shared.cli.print;
+package me.cnm.shared.cli.message;
 
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
