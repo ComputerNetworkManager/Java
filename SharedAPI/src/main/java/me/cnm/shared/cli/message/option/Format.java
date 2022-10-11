@@ -1,7 +1,8 @@
-package me.cnm.shared.cli.message;
+package me.cnm.shared.cli.message.option;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import me.cnm.shared.cli.message.ICLIMessageBuilder;
 
 /**
  * Formats that can be used to format text with the {@link ICLIMessageBuilder}

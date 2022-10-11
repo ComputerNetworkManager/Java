@@ -1,6 +1,10 @@
 package me.cnm.impl.shared.cli.message;
 
 import me.cnm.shared.cli.message.*;
+import me.cnm.shared.cli.message.option.Color;
+import me.cnm.shared.cli.message.option.CursorDirection;
+import me.cnm.shared.cli.message.option.EraseType;
+import me.cnm.shared.cli.message.option.Format;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;

@@ -1,4 +1,4 @@
-package me.cnm.shared.cli.message;
+package me.cnm.shared.cli.message.option;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

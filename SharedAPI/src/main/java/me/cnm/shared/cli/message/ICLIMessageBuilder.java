@@ -1,5 +1,9 @@
 package me.cnm.shared.cli.message;
 
+import me.cnm.shared.cli.message.option.Color;
+import me.cnm.shared.cli.message.option.CursorDirection;
+import me.cnm.shared.cli.message.option.EraseType;
+import me.cnm.shared.cli.message.option.Format;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
@@ -7,7 +11,7 @@ import org.jetbrains.annotations.NotNull;
  * The {@code ICLIPrint} can be used to modify cli messages<br>
  * More information can be found on <a href="https://en.wikipedia.org/wiki/ANSI_escape_code#Description">wikipedia</a>
  */
-@SuppressWarnings("unused")
+@SuppressWarnings({"unused", "UnusedReturnValue"})
 public interface ICLIMessageBuilder {
 
     /**
