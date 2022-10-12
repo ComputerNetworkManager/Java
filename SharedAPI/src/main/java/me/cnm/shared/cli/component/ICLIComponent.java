@@ -42,4 +42,11 @@ public interface ICLIComponent {
     @ApiStatus.OverrideOnly
     void handleInput(@NotNull String[] args);
 
+    /**
+     * Get the prompt to be shown in the console
+     *
+     * @return The prompt
+     */
+    String getPrompt();
+
 }

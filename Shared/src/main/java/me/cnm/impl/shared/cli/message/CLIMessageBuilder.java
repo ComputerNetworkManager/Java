@@ -65,7 +65,7 @@ public class CLIMessageBuilder implements ICLIMessageBuilder {
 
     @Override
     public ICLIMessageBuilder eraseScreen(@NotNull EraseType eraseType) {
-        this.appendEscapeSequence('j', eraseType.getCode());
+        this.appendEscapeSequence('J', eraseType.getCode());
         return this;
     }
 
@@ -76,7 +76,7 @@ public class CLIMessageBuilder implements ICLIMessageBuilder {
 
     @Override
     public ICLIMessageBuilder eraseLine(@NotNull EraseType eraseType) {
-        this.appendEscapeSequence('k', eraseType.getCode());
+        this.appendEscapeSequence('K', eraseType.getCode());
         return this;
     }
 

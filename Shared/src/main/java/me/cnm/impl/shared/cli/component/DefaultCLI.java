@@ -9,7 +9,9 @@ import me.cnm.shared.cli.command.ICommandHandler;
 import me.cnm.shared.cli.component.IDefaultCLI;
 import me.cnm.shared.cli.log.ILogHandler;
 import me.cnm.shared.cli.log.LogLevel;
-import org.fusesource.jansi.Ansi;
+import me.cnm.shared.cli.message.create.CLIMessageBuilder;
+import me.cnm.shared.cli.message.option.Color;
+import me.cnm.shared.cli.message.option.EraseType;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.PrintStream;
@@ -29,7 +31,7 @@ public class DefaultCLI implements IDefaultCLI {
 
     @Override
     public void printToConsole(Object object) {
-        this.consoleStream.print(Ansi.ansi().eraseLine(Ansi.Erase.ALL) + "\r");
+        this.consoleStream.print(CLIMessageBuilder.create().eraseLine(EraseType.ALL) + "\r");
         this.consoleStream.print(object);
         this.consoleHandler.redrawLine();
     }
@@ -41,7 +43,7 @@ public class DefaultCLI implements IDefaultCLI {
 
     @Override
     public void print(@NonNull LogLevel logLevel, @NonNull String message, Throwable throwable) {
-        this.consoleStream.print(Ansi.ansi().eraseLine(Ansi.Erase.ALL) + "\r");
+        this.consoleStream.print(CLIMessageBuilder.create().eraseLine(EraseType.ALL) + "\r");
         this.systemLogger.log(logLevel, message, throwable);
         this.consoleHandler.redrawLine();
     }
@@ -89,5 +91,13 @@ public class DefaultCLI implements IDefaultCLI {
         }
 
         this.consoleHandler.redrawLine();
+    }
+
+    @Override
+    public String getPrompt() {
+        return CLIMessageBuilder.create()
+                .textFg("CNM", Color.LIGHT_RED)
+                .text(">")
+                .build();
     }
 }

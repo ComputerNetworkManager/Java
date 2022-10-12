@@ -5,8 +5,10 @@ import me.cnm.shared.IHandlerLibrary;
 import me.cnm.shared.cli.component.AbstractCLIComponent;
 import me.cnm.shared.cli.component.system.ILoadingBar;
 import me.cnm.shared.cli.log.LogLevel;
+import me.cnm.shared.cli.message.ICLIMessageBuilder;
+import me.cnm.shared.cli.message.create.CLIMessageBuilder;
+import me.cnm.shared.cli.message.option.Color;
 import me.cnm.shared.utility.IUtilityHandler;
-import org.fusesource.jansi.Ansi;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -28,7 +30,7 @@ public class LoadingBarComponent extends AbstractCLIComponent implements ILoadin
             return;
         }
 
-        this.getDefaultCLI().printToConsole(Ansi.ansi().cursorUpLine().eraseLine());
+        this.getDefaultCLI().printToConsole(CLIMessageBuilder.create().cursorPreviousLine().eraseLine());
         this.getDefaultCLI().print(logLevel, message, throwable);
         this.redraw(false);
     }
@@ -40,8 +42,13 @@ public class LoadingBarComponent extends AbstractCLIComponent implements ILoadin
 
     @Override
     public void handleInput(@NotNull String[] args) {
-        this.getDefaultCLI().printToConsole(Ansi.ansi().cursorUpLine().eraseLine());
+        this.getDefaultCLI().printToConsole(CLIMessageBuilder.create().cursorPreviousLine().eraseLine());
         this.getDefaultCLI().handleInput(args);
+    }
+
+    @Override
+    public String getPrompt() {
+        return this.getDefaultCLI().getPrompt();
     }
 
     @Override
@@ -79,33 +86,34 @@ public class LoadingBarComponent extends AbstractCLIComponent implements ILoadin
     }
 
     private void redraw(boolean up) {
-        Ansi ansi = Ansi.ansi();
-        if (up) ansi = ansi.cursorUpLine();
+        ICLIMessageBuilder cliMessageBuilder = CLIMessageBuilder.create();
+        if (up) cliMessageBuilder.cursorPreviousLine();
 
-        this.getDefaultCLI().printlnToConsole(ansi
+        this.getDefaultCLI().printlnToConsole(cliMessageBuilder
                 .eraseLine()
-                .a(getBar())
-                .toString());
+                .text(getBar())
+                .build());
     }
 
     private String getBar() {
         StringBuilder bar = new StringBuilder()
-                .append(Ansi.ansi()
-                        .fgBrightBlack()
-                        .a("["));
+                .append(CLIMessageBuilder.create()
+                        .textFg("[", Color.GRAY)
+                        .build());
 
         for (int i = 0; i < 50; i++) {
-            if ((i * 2) < percentage) bar.append(Ansi.ansi().fgBrightGreen().a("="));
+            if ((i * 2) < percentage) bar.append(CLIMessageBuilder.create().textFg("=", Color.LIGHT_GREEN).build());
             else bar.append(" ");
         }
 
-        bar.append(Ansi.ansi().fgBrightBlack()
-                .a("] ")
-                .fgBright(this.finished ? Ansi.Color.GREEN : Ansi.Color.RED)
-                .a(this.finished ? "Done" : this.percentage + "%")
-                .reset()
-                .a(" ")
-                .a(this.name));
+        bar.append(
+                CLIMessageBuilder.create()
+                        .textFg("]", Color.GRAY)
+                        .fg(this.finished ? Color.LIGHT_GREEN : Color.LIGHT_RED)
+                        .text(this.finished ? "Done" : this.percentage + "%")
+                        .resetFormats()
+                        .text(" " + this.name)
+                        .build());
 
         return bar.toString();
     }

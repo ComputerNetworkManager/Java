@@ -24,4 +24,9 @@ public class DefaultCLIComponent extends AbstractCLIComponent {
         this.getDefaultCLI().handleInput(args);
     }
 
+    @Override
+    public String getPrompt() {
+        return this.getDefaultCLI().getPrompt();
+    }
+
 }

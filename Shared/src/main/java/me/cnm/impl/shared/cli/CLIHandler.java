@@ -1,5 +1,6 @@
 package me.cnm.impl.shared.cli;
 
+import lombok.Getter;
 import lombok.NonNull;
 import me.cnm.impl.shared.cli.command.CommandHandler;
 import me.cnm.impl.shared.cli.command.ConsoleHandler;
@@ -26,6 +27,8 @@ public class CLIHandler implements ICLIHandler {
 
     // Command
     private final ICommandHandler commandHandler;
+
+    @Getter
     private final ConsoleHandler consoleHandler;
 
     // Component
@@ -70,6 +73,7 @@ public class CLIHandler implements ICLIHandler {
     public void setComponent(@NonNull ICLIComponent cliComponent) {
         if (cliComponent instanceof AbstractCLIComponent abstractComponent) abstractComponent.setDefaultCLI(this.defaultCLI);
         this.currentComponent = cliComponent;
+        this.getConsoleHandler().interrupt();
     }
 
     @Override
@@ -88,4 +92,9 @@ public class CLIHandler implements ICLIHandler {
         return this.logHandler;
     }
 
+    @Override
+    public void suggest(String suggestion) {
+        this.consoleHandler.setSuggestion(suggestion);
+        this.consoleHandler.interrupt();
+    }
 }

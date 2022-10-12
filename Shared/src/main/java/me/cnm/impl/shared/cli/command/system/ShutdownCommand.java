@@ -2,7 +2,8 @@ package me.cnm.impl.shared.cli.command.system;
 
 import me.cnm.shared.cli.command.Command;
 import me.cnm.shared.cli.log.ILogHandler;
-import org.fusesource.jansi.Ansi;
+import me.cnm.shared.cli.message.create.CLIMessageBuilder;
+import me.cnm.shared.cli.message.option.Color;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.concurrent.TimeUnit;
@@ -18,8 +19,11 @@ public class ShutdownCommand extends Command {
     @Override
     public void execute(@NotNull String[] args) {
         if (args.length != 0) {
-            this.getHandlerLibrary().getHandler(ILogHandler.class).info("Use " +
-                    Ansi.ansi().fgBrightCyan().a("shutdown").reset());
+            this.getHandlerLibrary().getHandler(ILogHandler.class).info(
+                    CLIMessageBuilder.create()
+                            .text("Use ")
+                            .textFg("shutdown", Color.LIGHT_CYAN)
+                            .build());
             return;
         }
 
@@ -29,9 +33,12 @@ public class ShutdownCommand extends Command {
             System.exit(0);
         }
 
-        this.getHandlerLibrary().getHandler(ILogHandler.class).info("If you want the system to shutdown, " +
-                "enter this command again in the next "
-                + Ansi.ansi().fgBrightCyan().a("30 seconds").reset() + ".");
+        this.getHandlerLibrary().getHandler(ILogHandler.class).info(
+                CLIMessageBuilder.create()
+                        .text("If you want the system to shutdown, enter this command again in the next ")
+                        .textFg("30 seconds", Color.LIGHT_CYAN)
+                        .text(".")
+                        .build());
         this.lastExecute = System.currentTimeMillis();
     }
 
