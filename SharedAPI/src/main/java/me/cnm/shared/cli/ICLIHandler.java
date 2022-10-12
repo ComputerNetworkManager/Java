@@ -56,4 +56,10 @@ public interface ICLIHandler {
     @NotNull
     ILogHandler getLogHandler();
 
+    /**
+     * Suggest an input
+     * @param suggestion The suggestion
+     */
+    void suggest(String suggestion);
+
 }

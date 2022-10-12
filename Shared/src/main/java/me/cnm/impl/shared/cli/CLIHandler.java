@@ -92,4 +92,9 @@ public class CLIHandler implements ICLIHandler {
         return this.logHandler;
     }
 
+    @Override
+    public void suggest(String suggestion) {
+        this.consoleHandler.setSuggestion(suggestion);
+        this.consoleHandler.interrupt();
+    }
 }
