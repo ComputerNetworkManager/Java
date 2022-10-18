@@ -33,6 +33,8 @@ public class CLIHandler implements ICLIHandler {
 
     // Component
     private final ICLIComponent defaultCLIComponent;
+
+    @Getter
     private final IDefaultCLI defaultCLI;
     private ICLIComponent currentComponent;
 
@@ -47,7 +49,7 @@ public class CLIHandler implements ICLIHandler {
 
         // Command
         this.commandHandler = new CommandHandler(this.handlerLibrary);
-        this.consoleHandler = new ConsoleHandler(() -> currentComponent);
+        this.consoleHandler = new ConsoleHandler(this::getDefaultCLI, () -> currentComponent);
 
         // Log
         SystemLogger systemLogger = new SystemLogger(this.handlerLibrary);
