@@ -1,11 +1,11 @@
 package me.cnm.impl.shared.cli.command;
 
 import lombok.Setter;
+import me.cnm.impl.shared.cli.log.PrintAboveAppender;
 import me.cnm.shared.cli.component.ICLIComponent;
 import org.jline.reader.LineReader;
 import org.jline.reader.LineReaderBuilder;
 import org.jline.reader.UserInterruptException;
-import org.jline.reader.impl.LineReaderImpl;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -31,6 +31,8 @@ public class ConsoleHandler {
         this.lineReader = LineReaderBuilder.builder()
                 .completer(new SystemCompleter(componentSupplier))
                 .build();
+
+        PrintAboveAppender.setLineReader(this.lineReader);
     }
 
     public void startListen() {
@@ -51,19 +53,14 @@ public class ConsoleHandler {
     private void runConsole() {
         String readLine;
         try {
-            while ((readLine = this.lineReader.readLine(componentSupplier.get().getPrompt(),
-                    null, this.suggestion)) != null) {
+            while ((readLine = this.lineReader.readLine("\r" +
+                    this.componentSupplier.get().getPrompt(), null, this.suggestion)) != null) {
                 this.suggestion = null;
-                componentSupplier.get().handleInput(readLine.split(" "));
+                this.componentSupplier.get().handleInput(readLine.split(" "));
             }
         } catch (UserInterruptException e) {
             if (!this.shouldInterrupt) System.exit(0);
         }
-    }
-
-    public void redrawLine() {
-        ((LineReaderImpl) this.lineReader).redrawLine();
-        ((LineReaderImpl) this.lineReader).redisplay();
     }
 
     public void interrupt() {
@@ -78,4 +75,7 @@ public class ConsoleHandler {
         this.interrupt();
     }
 
+    public void printAbove(Object object) {
+        this.lineReader.printAbove(object.toString());
+    }
 }
