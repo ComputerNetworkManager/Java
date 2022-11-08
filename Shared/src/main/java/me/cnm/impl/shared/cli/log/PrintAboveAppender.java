@@ -10,6 +10,7 @@ import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.jline.reader.LineReader;
 
 import java.io.Serializable;
+import java.nio.charset.Charset;
 
 @Plugin(name = "PrintAbove", category = Core.CATEGORY_NAME, elementType = Appender.ELEMENT_TYPE, printObject = true)
 public class PrintAboveAppender extends AbstractAppender {
@@ -35,7 +36,8 @@ public class PrintAboveAppender extends AbstractAppender {
 
     @Override
     public void append(LogEvent event) {
-        if (lineReader != null) lineReader.printAbove(new String(getLayout().toByteArray(event), Charset.defaultCharset()));
+        if (lineReader != null)
+            lineReader.printAbove(new String(getLayout().toByteArray(event), Charset.defaultCharset()));
     }
 
 }
