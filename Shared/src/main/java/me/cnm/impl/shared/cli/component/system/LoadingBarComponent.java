@@ -31,6 +31,7 @@ public class LoadingBarComponent extends AbstractCLIComponent implements ILoadin
         }
 
         this.getDefaultCLI().printToConsole(CLIMessageBuilder.create().cursorPreviousLine().eraseLine());
+        this.getDefaultCLI().printPlainToConsole(CLIMessageBuilder.create().cursorPreviousLine().eraseLine() + "\r");
         this.getDefaultCLI().print(logLevel, message, throwable);
         this.redraw(false);
     }
@@ -108,7 +109,7 @@ public class LoadingBarComponent extends AbstractCLIComponent implements ILoadin
 
         bar.append(
                 CLIMessageBuilder.create()
-                        .textFg("]", Color.GRAY)
+                        .textFg("] ", Color.GRAY)
                         .fg(this.finished ? Color.LIGHT_GREEN : Color.LIGHT_RED)
                         .text(this.finished ? "Done" : this.percentage + "%")
                         .resetFormats()

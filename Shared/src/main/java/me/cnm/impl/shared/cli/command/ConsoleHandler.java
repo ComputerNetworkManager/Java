@@ -3,7 +3,6 @@ package me.cnm.impl.shared.cli.command;
 import lombok.Setter;
 import me.cnm.impl.shared.cli.log.PrintAboveAppender;
 import me.cnm.shared.cli.component.ICLIComponent;
-import me.cnm.shared.cli.component.IDefaultCLI;
 import org.jline.reader.LineReader;
 import org.jline.reader.LineReaderBuilder;
 import org.jline.reader.UserInterruptException;
@@ -16,7 +15,6 @@ public class ConsoleHandler {
 
     private final ExecutorService executorService = Executors.newCachedThreadPool();
 
-    private final Supplier<IDefaultCLI> defaultCLISupplier;
     private final Supplier<ICLIComponent> componentSupplier;
     private final LineReader lineReader;
 
@@ -27,8 +25,7 @@ public class ConsoleHandler {
     private boolean run = true;
     private Thread thread;
 
-    public ConsoleHandler(Supplier<IDefaultCLI> defaultCLISupplier, Supplier<ICLIComponent> componentSupplier) {
-        this.defaultCLISupplier = defaultCLISupplier;
+    public ConsoleHandler(Supplier<ICLIComponent> componentSupplier) {
         this.componentSupplier = componentSupplier;
 
         this.lineReader = LineReaderBuilder.builder()
@@ -56,7 +53,6 @@ public class ConsoleHandler {
     private void runConsole() {
         String readLine;
         try {
-            // this.lineReader.readLine("\r\u001B[2K"
             while ((readLine = this.lineReader.readLine("\r" +
                     this.componentSupplier.get().getPrompt(), null, this.suggestion)) != null) {
                 this.suggestion = null;
@@ -79,4 +75,7 @@ public class ConsoleHandler {
         this.interrupt();
     }
 
+    public void printAbove(Object object) {
+        this.lineReader.printAbove(object.toString());
+    }
 }

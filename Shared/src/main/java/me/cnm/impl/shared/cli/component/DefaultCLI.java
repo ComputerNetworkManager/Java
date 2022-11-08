@@ -11,7 +11,6 @@ import me.cnm.shared.cli.log.ILogHandler;
 import me.cnm.shared.cli.log.LogLevel;
 import me.cnm.shared.cli.message.create.CLIMessageBuilder;
 import me.cnm.shared.cli.message.option.Color;
-import me.cnm.shared.cli.message.option.EraseType;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.PrintStream;
@@ -30,9 +29,13 @@ public class DefaultCLI implements IDefaultCLI {
     private final SystemLogger systemLogger;
 
     @Override
-    public void printToConsole(Object object) {
-        this.consoleStream.print(CLIMessageBuilder.create().eraseLine(EraseType.ALL) + "\r");
+    public void printPlainToConsole(Object object) {
         this.consoleStream.print(object);
+    }
+
+    @Override
+    public void printToConsole(Object object) {
+        this.consoleHandler.printAbove(object);
     }
 
     @Override
@@ -42,7 +45,6 @@ public class DefaultCLI implements IDefaultCLI {
 
     @Override
     public void print(@NonNull LogLevel logLevel, @NonNull String message, Throwable throwable) {
-        this.consoleStream.print(CLIMessageBuilder.create().eraseLine(EraseType.ALL) + "\r");
         this.systemLogger.log(logLevel, message, throwable);
     }
 

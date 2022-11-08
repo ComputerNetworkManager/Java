@@ -49,7 +49,7 @@ public class CLIHandler implements ICLIHandler {
 
         // Command
         this.commandHandler = new CommandHandler(this.handlerLibrary);
-        this.consoleHandler = new ConsoleHandler(this::getDefaultCLI, () -> currentComponent);
+        this.consoleHandler = new ConsoleHandler(() -> currentComponent);
 
         // Log
         SystemLogger systemLogger = new SystemLogger(this.handlerLibrary);
