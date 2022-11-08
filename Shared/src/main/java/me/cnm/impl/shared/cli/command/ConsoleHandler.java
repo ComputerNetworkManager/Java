@@ -1,11 +1,11 @@
 package me.cnm.impl.shared.cli.command;
 
 import lombok.Setter;
+import me.cnm.impl.shared.cli.log.PrintAboveAppender;
 import me.cnm.shared.cli.component.ICLIComponent;
 import org.jline.reader.LineReader;
 import org.jline.reader.LineReaderBuilder;
 import org.jline.reader.UserInterruptException;
-import org.jline.reader.impl.LineReaderImpl;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -31,6 +31,8 @@ public class ConsoleHandler {
         this.lineReader = LineReaderBuilder.builder()
                 .completer(new SystemCompleter(componentSupplier))
                 .build();
+
+        PrintAboveAppender.setLineReader(this.lineReader);
     }
 
     public void startListen() {
@@ -59,11 +61,6 @@ public class ConsoleHandler {
         } catch (UserInterruptException e) {
             if (!this.shouldInterrupt) System.exit(0);
         }
-    }
-
-    public void redrawLine() {
-        ((LineReaderImpl) this.lineReader).redrawLine();
-        ((LineReaderImpl) this.lineReader).redisplay();
     }
 
     public void interrupt() {
