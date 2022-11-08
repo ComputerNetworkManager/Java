@@ -17,4 +17,19 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
+    <dependencies>
+        <dependency>
+            <groupId>me.cnm</groupId>
+            <artifactId>ServerAPI</artifactId>
+            <version>1.0-dev1.0.1</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>me.cnm</groupId>
+            <artifactId>Shared</artifactId>
+            <version>1.0-dev1.0.1</version>
+            <scope>compile</scope>
+        </dependency>
+    </dependencies>
+
 </project>
