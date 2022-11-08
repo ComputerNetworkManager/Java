@@ -12,6 +12,15 @@ import java.util.List;
 public interface IDefaultCLI {
 
     /**
+     * Print a message directly to the console without any processing<br>
+     * <b>Pleas notice, that the cursor does not move up before or erase anything</b><br>
+     * If you want to have a pretty output, that clears the prompt, etc. use {@link #printToConsole(Object)}
+     *
+     * @param object The object to be printed to the console
+     */
+    void printPlainToConsole(Object object);
+
+    /**
      * Prints a message only to the console
      *
      * @param object The Object to be printed to the console

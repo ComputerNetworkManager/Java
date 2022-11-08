@@ -33,6 +33,8 @@ public class CLIHandler implements ICLIHandler {
 
     // Component
     private final ICLIComponent defaultCLIComponent;
+
+    @Getter
     private final IDefaultCLI defaultCLI;
     private ICLIComponent currentComponent;
 

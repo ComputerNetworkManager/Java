@@ -1,7 +1,7 @@
 package me.cnm.impl.client;
 
 import me.cnm.impl.shared.bootstrap.Bootstrap;
-import me.cnm.shared.cli.ICLIHandler;
+import me.cnm.shared.cli.command.ICommandHandler;
 
 public class Client {
 
@@ -14,7 +14,7 @@ public class Client {
 
     public void start() {
         this.bootstrap.start();
-        this.bootstrap.getHandlerLibrary().getHandler(ICLIHandler.class).suggest("suggestion");
+        this.bootstrap.getHandlerLibrary().getHandler(ICommandHandler.class).register(new Test());
     }
 
     public void stop() {
