@@ -33,7 +33,6 @@ public class DefaultCLI implements IDefaultCLI {
     public void printToConsole(Object object) {
         this.consoleStream.print(CLIMessageBuilder.create().eraseLine(EraseType.ALL) + "\r");
         this.consoleStream.print(object);
-        this.consoleHandler.redrawLine();
     }
 
     @Override
@@ -45,7 +44,6 @@ public class DefaultCLI implements IDefaultCLI {
     public void print(@NonNull LogLevel logLevel, @NonNull String message, Throwable throwable) {
         this.consoleStream.print(CLIMessageBuilder.create().eraseLine(EraseType.ALL) + "\r");
         this.systemLogger.log(logLevel, message, throwable);
-        this.consoleHandler.redrawLine();
     }
 
     @Override
@@ -89,8 +87,6 @@ public class DefaultCLI implements IDefaultCLI {
         } catch (Exception e) {
             this.print(LogLevel.ERROR, "An error occurred while execute command " + command.getName(), null);
         }
-
-        this.consoleHandler.redrawLine();
     }
 
     @Override

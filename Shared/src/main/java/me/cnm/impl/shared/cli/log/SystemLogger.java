@@ -8,7 +8,6 @@ import me.cnm.shared.utility.json.JsonDocument;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.appender.ConsoleAppender;
 import org.apache.logging.log4j.core.config.Configurator;
 import org.apache.logging.log4j.core.config.builder.api.*;
 import org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration;
@@ -51,6 +50,7 @@ public class SystemLogger {
 
         // Create builder
         ConfigurationBuilder<BuiltConfiguration> builder = ConfigurationBuilderFactory.newConfigurationBuilder();
+        builder.setPackages("me.cnm.impl.shared.cli.log");
         builder.setStatusLevel(logLevel);
 
         // Layout
@@ -61,8 +61,7 @@ public class SystemLogger {
                 .addAttribute("pattern", fileDocument.getString("pattern"));
 
         // Console
-        AppenderComponentBuilder consoleComponent = builder.newAppender("Console", "Console")
-                .addAttribute("target", ConsoleAppender.Target.SYSTEM_OUT)
+        AppenderComponentBuilder consoleComponent = builder.newAppender("Console", "PrintAbove")
                 .add(consoleLayoutBuilder);
 
         // File
