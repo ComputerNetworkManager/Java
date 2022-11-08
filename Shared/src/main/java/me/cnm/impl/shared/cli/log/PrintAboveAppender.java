@@ -35,7 +35,7 @@ public class PrintAboveAppender extends AbstractAppender {
 
     @Override
     public void append(LogEvent event) {
-        if (lineReader != null) lineReader.printAbove(new String(getLayout().toByteArray(event)));
+        if (lineReader != null) lineReader.printAbove(new String(getLayout().toByteArray(event), Charset.defaultCharset()));
     }
 
 }
